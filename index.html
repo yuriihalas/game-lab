@@ -21,6 +21,7 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple
 #err{position:absolute;left:12px;right:12px;top:52px;display:none;background:rgba(60,20,20,.94);border:1px solid #f09a8e;color:#ffe3de;padding:10px 14px;border-radius:12px;font-size:14px;line-height:1.4;z-index:5}
 body.lite #mid{display:flex;align-items:center;justify-content:center;overflow:auto}
 body.lite #sheet{position:relative;z-index:1}
+body.lite #pad,body.lite #hintbox,body.lite #tip{z-index:4}
 #hw{font-size:13px;color:#F09A8E;min-height:18px;margin-top:2px}
 #lv{display:flex;gap:5px;margin-top:6px;flex-wrap:wrap;align-items:center}
 #lv .chl{font-size:11px;color:var(--muted);margin:0 2px 0 8px;text-transform:uppercase;letter-spacing:.06em}
@@ -51,7 +52,7 @@ button.hint{box-shadow:0 0 0 2px #7fe0a8,0 0 14px #7fe0a8;border-color:#7fe0a8}
 .cl.me{color:var(--gold)}
 .cl.left{transform:translate(0,-50%)}
 #keys{font-size:12px;color:var(--muted);line-height:1.5}
-.ov{position:absolute;inset:0;display:none;align-items:center;justify-content:center;background:rgba(8,8,12,.55);padding:16px}
+.ov{position:absolute;inset:0;z-index:6;display:none;align-items:center;justify-content:center;background:rgba(8,8,12,.55);padding:16px}
 .ov>div{background:#171a22;border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:22px 26px;max-width:460px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.5)}
 .ov h2{margin:0 0 10px;font-weight:600;color:var(--gold)}
 .ov p{margin:0 0 12px;color:#cfcabe;line-height:1.5;font-size:15px}

@@ -12,6 +12,15 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple
 #top h1{margin:0;font-size:17px;font-weight:600}
 #chn{font-size:12px;color:var(--muted)}
 #hb{font-size:14px;line-height:1.45;max-width:820px;margin-top:4px}
+#plan{font-size:13px;margin-top:5px;display:flex;flex-wrap:wrap;gap:4px 14px;color:#cfcabe}
+#plan .g{white-space:normal}
+#plan .g.ok{color:#7fe0a8;text-decoration:line-through;text-decoration-color:rgba(127,224,168,.5)}
+#plan .t{color:var(--muted);text-transform:uppercase;font-size:11px;letter-spacing:.06em;align-self:center}
+#tip{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);max-width:min(560px,70%);font-size:14px;line-height:1.4;background:rgba(18,24,38,.92);border:1px solid rgba(159,195,255,.45);color:#dbe7ff;padding:8px 14px;border-radius:12px;display:none;text-align:center}
+#pad button.off{opacity:.25}
+#err{position:absolute;left:12px;right:12px;top:52px;display:none;background:rgba(60,20,20,.94);border:1px solid #f09a8e;color:#ffe3de;padding:10px 14px;border-radius:12px;font-size:14px;line-height:1.4;z-index:5}
+body.lite #mid{display:flex;align-items:center;justify-content:center;overflow:auto}
+body.lite #sheet{position:relative;z-index:1}
 #hw{font-size:13px;color:#F09A8E;min-height:18px;margin-top:2px}
 #lv{display:flex;gap:5px;margin-top:6px;flex-wrap:wrap;align-items:center}
 #lv .chl{font-size:11px;color:var(--muted);margin:0 2px 0 8px;text-transform:uppercase;letter-spacing:.06em}
@@ -53,11 +62,12 @@ button.hint{box-shadow:0 0 0 2px #7fe0a8,0 0 14px #7fe0a8;border-color:#7fe0a8}
 @media (max-width:700px){#keys,#bs,.kk{display:none}#top{padding:8px 12px 6px}#bot{padding:6px 12px 8px}#hb{font-size:13px}#act button{padding:8px 9px;font-size:12px}#pad{grid-template-columns:repeat(3,48px);grid-template-rows:repeat(2,48px)}}
 @media (hover:hover) and (pointer:fine) and (min-width:701px){#pad{opacity:.55}#pad:hover{opacity:1}}
 </style></head><body>
-<div id="top"><div id="bar"><span id="logo">MANTLE</span><h1 id="ht"></h1><span id="chn"></span></div><div id="hb"></div><div id="hw"></div>
+<div id="top"><div id="bar"><span id="logo">MANTLE</span><h1 id="ht"></h1><span id="chn"></span></div><div id="hb"></div><div id="plan"></div><div id="hw"></div>
  <div id="lv"></div></div>
 <div id="mid"><canvas id="gl"></canvas>
- <div id="axis"></div><div id="cl"></div><div id="hintbox"></div>
+ <div id="axis"></div><div id="cl"></div><div id="hintbox"></div><div id="err"></div><div id="tip"></div>
  <div id="pad"><button class="u" data-k="U">↑</button><button class="l" data-k="L">←</button><button class="d" data-k="D">↓</button><button class="r" data-k="R">→</button></div>
+ <div id="newc" class="ov"><div><h2 id="nh">Нове</h2><p id="nt"></p><button id="nok">Зрозуміло</button></div></div>
  <div id="win" class="ov"><div><h2 id="wh"></h2><p id="wt"></p><button id="nx"></button></div></div>
  <div id="intro" class="ov"><div><h2>Mantle</h2>
   <p>Головоломка про четвертий вимір. Ти бачиш лише <b>зріз</b> світу, як аркуш скла. Стіна, суцільна в твоєму зрізі, у сусідньому може бути відкрита.</p>
@@ -155,21 +165,39 @@ function needY(L,opt){const o=Object.assign({},opt||{});
 root.Mantle={load,step,solve,won,look,key,occ,needY,SHAPES};
 })(typeof module!=='undefined'?module.exports:window);
 
-const LEVELS=[{"ch":"Плаский герой","title":"Плаский герой","flat":true,"hint":"Дійди до кристала. Стрілки або A / D.","hint2":"Камера виїхала назовні. Герой плаский: він живе в скляному аркуші й бачить лише його зріз. Стіна є тільки в цьому зрізі. Натисни <b>Q</b>: аркуш повернеться, і герой обійде стіну. <b>C</b> повертає погляд героя.","X":7,"Y":1,"W":4,"h":[["1112221"],["1112121"],["1111111"],["1111111"]],"bodies":[],"start":[1,0,1],"gem":[4,0,1],"min":8,"sol":"RTRTLLTR"},{"ch":"Плаский герой","title":"Ящик у яму","flat":true,"hint":"Яма перетинає всі зрізи. Зіштовхни ящик у яму: шматок, що впав у яму, стає підлогою.","X":5,"Y":1,"W":3,"h":[["11011"],["11011"],["11011"]],"bodies":[{"shape":"crate","at":[1,0,1]}],"start":[0,0,1],"gem":[4,0,1],"min":4,"sol":"RRRR"},{"ch":"Плаский герой","title":"Візьми ящик із собою","flat":true,"hint":"Ящик заважає, а обійти його в цьому зрізі нема як. Стань поруч і <b>повернись разом із ним (Shift+Q або Shift+E)</b>: ящик піде в сусідній зріз. Куди саме, показують світлі кубики.","X":4,"Y":1,"W":3,"h":[["1121"],["1021"],["1111"]],"bodies":[{"shape":"crate","at":[1,0,2]}],"start":[0,0,2],"gem":[3,0,2],"min":5,"sol":"RhTRR"},{"ch":"Плаский герой","title":"Куб, який виявився мостом","flat":true,"hint":"Ззовні видно: це не куб, а дошка, що лежить упоперек аркуша. Герой бачить лише її зріз. Зіштовхни її в яму.","X":6,"Y":1,"W":4,"h":[["111011"],["111022"],["121022"],["121011"]],"bodies":[{"shape":"beamw","at":[2,0,1]}],"start":[0,0,1],"gem":[5,0,3],"min":9,"sol":"RRRTRRTLL"},{"ch":"Плаский герой","title":"Поверни дошку","flat":true,"hint":"Яма перетинає всі зрізи. Стань упритул до кінця дошки й повернись <b>разом із нею (Shift+Q)</b>. Для героя дошка не зрушила. Ззовні видно, що вона лягла впоперек.","X":7,"Y":1,"W":4,"h":[["1111011"],["1111011"],["1111011"],["1111011"]],"bodies":[{"shape":"beamx","at":[0,0,3]}],"start":[3,0,3],"gem":[6,0,0],"min":12,"sol":"HTRTRRRTRRRR"},{"ch":"Плаский герой","title":"Одна дошка, три повороти","hint":"Дошка одна, ям кілька. Застряг? Натисни «Підказка».","flat":true,"X":6,"Y":1,"W":5,"h":[["100111"],["101111"],["102121"],["112121"],["212121"]],"bodies":[{"shape":"crate","at":[1,0,3]},{"shape":"beamw","at":[3,0,1]}],"start":[0,0,1],"gem":[5,0,3],"min":18,"sol":"TRRThLLHLLhTLLLTLL"},{"ch":"Об'ємний світ","title":"Сейф","hint":"Те саме, на вимір вище. Тепер ти бачиш кімнату, а не лінію, і ззовні подивитись уже нема звідки. Кристал замуровано з усіх боків. Над і під кімнатою скляні картки: це сусідні зрізи світу. У них на цьому місці стін немає.","X":7,"Y":5,"W":3,"h":[["1111111","1111111","1111111","1111111","1111111"],["1111111","1112221","1112121","1112221","1111111"],["1111111","1111111","1111111","1111111","1111111"]],"bodies":[],"start":[1,2,1],"gem":[4,2,1],"min":8,"sol":"RTLTLLTL"},{"ch":"Об'ємний світ","title":"Дошка крізь зрізи","hint":"Яма тягнеться крізь усі зрізи. Дошка лежить уздовж X. Поверни її разом із собою (Shift+Q), і вона ляже вздовж W.","X":7,"Y":3,"W":4,"h":[["1111011","1111011","1111011"],["1111011","1111011","1111011"],["1111011","1111011","1111011"],["1111011","1111011","1111011"]],"bodies":[{"shape":"beamx","at":[0,1,3]}],"start":[3,1,3],"gem":[6,1,0],"min":12,"sol":"HULLLTRDLLLL"},{"ch":"Об'ємний світ","title":"Дошка в куті","hint":"Тепер у повній кімнаті. Дошка лежить не там і не так.","X":6,"Y":3,"W":3,"h":[["112111","122111","122111"],["112001","122001","122001"],["111111","122111","122111"]],"bodies":[{"shape":"beamx","at":[0,2,2]}],"start":[0,0,0],"gem":[5,2,1],"min":15,"sol":"UURTRHTLTRRRRTL"},{"ch":"Об'ємний світ","title":"Ліва рукавичка","hint":"Замок у підлозі має форму дзеркальної Г, а твій ключ звичайний. Жодним рухом у цьому зрізі Г не стане своїм відбитком. Поверни ключ разом із собою двічі в один бік.","X":9,"Y":3,"W":4,"h":[["111112222","111112222","111112222"],["111112221","111110221","111110001"],["111112222","111112222","111112222"],["111112222","111112222","111112222"]],"bodies":[{"shape":"ell","at":[1,0,1]}],"start":[0,1,1],"gem":[8,0,1],"min":17,"sol":"RRRRHHURRDLLLDLLL"},{"ch":"Об'ємний світ","title":"Справжня рукавичка","hint":"Цей ключ заввишки у два кубики, як гвинт. Пласку Г можна було б підняти й перевернути, а гвинт у 3D не віддзеркалить жоден поворот. Через W можна: подивись, як він стискається у твій зріз і виростає дзеркальним.","X":9,"Y":3,"W":4,"h":[["111112222","111112222","111112222"],["111112222","111110222","111110011"],["111112222","111112222","111112222"],["111112222","111112222","111112222"]],"bodies":[{"shape":"screw","at":[1,0,1]}],"start":[0,1,1],"gem":[8,0,1],"min":13,"sol":"RRURRDDhhLLLL"},{"ch":"Об'ємний світ","title":"Дві дошки, одна яма","hint":"Дошок дві, а яма одна. Котра з них стане мостом і звідки її повертати?","X":7,"Y":3,"W":3,"h":[["1111101","1111101","1111101"],["1111101","1111101","1111101"],["1112201","1112201","1112001"]],"bodies":[{"shape":"beamx","at":[2,0,1]},{"shape":"beamx","at":[2,0,0]}],"start":[0,0,0],"gem":[6,1,1],"min":14,"sol":"RRTHULLTLDHRRU"},{"ch":"Об'ємний світ","title":"Двоє в коридорі","hint":"Два шматки і чотири повороти зі шматком у найкоротшому розв'язку.","X":5,"Y":4,"W":3,"h":[["11211","12221","11211","11211"],["11211","12221","11211","11211"],["11011","12221","11001","11011"]],"bodies":[{"shape":"crate","at":[3,1,1]},{"shape":"crate","at":[0,1,0]}],"start":[0,2,2],"gem":[4,1,1],"min":19,"sol":"DTLHHULDTRDHHLLLUTR"},{"ch":"Об'ємний світ","title":"Штовхни вглиб","hint":"Тут мало самих поворотів: без поштовху вздовж Y, від себе чи до себе, кімнату не пройти.","X":6,"Y":3,"W":3,"h":[["111101","110001","111101"],["110001","110001","110101"],["111001","111001","111001"]],"bodies":[{"shape":"crate","at":[1,1,2]}],"start":[0,0,0],"gem":[5,0,2],"min":20,"sol":"RUTRHURDTRDhLLLLLTLL"},{"ch":"Об'ємний світ","title":"Колодязь","hint":"Знову без поштовху вздовж Y не обійтись. Дивись на скляні картки: де в сусідніх зрізах ями?","X":5,"Y":4,"W":4,"h":[["11110","11121","11121","11121"],["11101","11121","11121","11101"],["11121","11121","11121","11021"],["11121","12121","11221","11121"]],"bodies":[{"shape":"crate","at":[2,2,3]}],"start":[0,3,0],"gem":[4,0,2],"min":20,"sol":"RRDTRRHURDDTRDhLLLTL"},{"ch":"Важкі","title":"Обхід","hint":"Стіни в сусідніх зрізах стоять по-різному. Дошку треба принести до ями в іншому зрізі.","X":6,"Y":3,"W":3,"h":[["121121","121121","121121"],["121121","121121","121021"],["111111","111211","111011"]],"bodies":[{"shape":"beamx","at":[1,2,2]}],"start":[0,0,0],"gem":[5,1,2],"min":22,"sol":"UUTRRTLDLTRUTRTHTLTRRD"},{"ch":"Важкі","title":"Дошка йде крізь лабіринт","hint":"Дошку доведеться кілька разів переставити поворотами. Думай, де стати.","flat":true,"X":5,"Y":1,"W":5,"h":[["10101"],["10001"],["10011"],["11011"],["11211"]],"bodies":[{"shape":"beamw","at":[0,0,0]}],"start":[0,0,3],"gem":[4,0,4],"min":28,"sol":"THTLTRThTLTHTLTLLHTLLTRRRRTR"},{"ch":"Важкі","title":"Довга дорога","hint":"Тридцять ходів і більше. Спершу план, потім ноги.","X":7,"Y":3,"W":3,"h":[["1111101","1111101","1111101"],["1122101","1112101","1111101"],["1111201","1111221","2111221"]],"bodies":[{"shape":"beamw","at":[2,1,0]}],"start":[0,1,0],"gem":[6,1,2],"min":31,"sol":"RURRDLTRTHDRUTLLURRDRRTRUHLLDTL"},{"ch":"Важкі","title":"Плаский фінал","hint":"Найдовша кімната плаского героя.","flat":true,"X":6,"Y":1,"W":5,"h":[["111112"],["100001"],["110001"],["110021"],["110101"]],"bodies":[{"shape":"beamx","at":[2,0,0]}],"start":[0,0,1],"gem":[5,0,4],"min":35,"sol":"TLTLHTLTRRRTHTRTHTLTHLTRTRTRRRRRTRR"}];
+// Room plans: small goals the page ticks off by itself. Shared by the page (window) and node (checks in build.js).
+(function(root){
+const preds={
+  turned:(L,s)=>s.v%2===1,                                   // the slice is turned across
+  leftSlice:(L,s)=>s.p[2]!==L.init.p[2],                      // you stand in another slice than at the start
+  sunk:(L,s,i)=>s.bs[i].some(c=>L.dec(c)[2]===0),             // piece i fell into a pit
+  alongW:(L,s,i)=>new Set(s.bs[i].map(c=>L.dec(c)[3])).size>1, // piece i spans several slices
+  otherSlice:(L,s,i)=>s.bs[i].every(c=>L.dec(c)[3]!==L.init.p[2]),
+  mirror:(L,s,i)=>{const n=cs=>{const q=cs.map(c=>L.dec(c)),mx=Math.min(...q.map(a=>a[0])),my=Math.min(...q.map(a=>a[1])),mz=Math.min(...q.map(a=>a[2]));
+      return q.map(a=>[a[0]-mx,a[1]-my,a[2]-mz,a[3]]).map(a=>a.join()).sort().join('|')};
+    const one=s.bs[i].map(c=>L.dec(c));if(new Set(one.map(a=>a[3])).size>1)return false;
+    const o=L.init.bs[i].map(c=>L.dec(c)),flip=o.map(a=>L.idx(L.X-1-a[0],a[1],a[2],a[3]));
+    return n(s.bs[i])===n(flip)&&n(s.bs[i])!==n(L.init.bs[i])}};
+// a goal counts as reached once any state you have been in satisfied it (so a later turn or Z does not untick it by surprise)
+function check(L,g,states){const [k,i]=g.k.split(':');return states.some(s=>preds[k](L,s,+i||0))}
+root.MantleGoals={preds,check};
+})(typeof module!=='undefined'?module.exports:window);
+
+const LEVELS=[{"ch":"Плаский герой","title":"Плаский герой","flat":true,"hint":"Дійди до кристала. Стрілки або A / D.","hint2":"Камера виїхала назовні. Герой плаский: він живе в скляному аркуші й бачить лише його зріз. Стіна є тільки в цьому зрізі. Натисни <b>Q</b>: аркуш повернеться, і герой обійде стіну. <b>C</b> повертає погляд героя.","X":7,"Y":1,"W":4,"h":[["1112221"],["1112121"],["1111111"],["1111111"]],"bodies":[],"start":[1,0,1],"gem":[4,0,1],"goals":[["turned","Поверни аркуш (Q або E): стіна стоїть лише в цьому аркуші"],["leftSlice","Перейди в сусідній аркуш, де стіни немає"]],"min":8,"sol":"RTRTLLTR"},{"ch":"Плаский герой","title":"Ящик у яму","flat":true,"hint":"Яма перетинає всі зрізи. Зіштовхни ящик у яму: шматок, що впав у яму, стає підлогою.","X":5,"Y":1,"W":3,"h":[["11011"],["11011"],["11011"]],"bodies":[{"shape":"crate","at":[1,0,1]}],"start":[0,0,1],"gem":[4,0,1],"intro":"<b>Нове: шматки.</b> Їх можна штовхати, просто йдучи на них. Шматок, що впав у яму, стає підлогою, і по ньому можна пройти.","goals":[["sunk:0","Зіштовхни ящик у яму"]],"min":4,"sol":"RRRR"},{"ch":"Плаский герой","title":"Візьми ящик із собою","flat":true,"hint":"Ящик заважає, а обійти його в цьому зрізі нема як. Стань поруч і <b>повернись разом із ним (Shift+Q або Shift+E)</b>: ящик піде в сусідній зріз. Куди саме, показують світлі кубики.","X":4,"Y":1,"W":3,"h":[["1121"],["1021"],["1111"]],"bodies":[{"shape":"crate","at":[1,0,2]}],"start":[0,0,2],"gem":[3,0,2],"intro":"<b>Нове: поворот разом зі шматком.</b> Коли шматок стоїть упритул до героя збоку, <b>Shift+Q</b> чи <b>Shift+E</b> повертає аркуш разом із ним. Шматок при цьому переходить у сусідні аркуші. Світлі кубики заздалегідь показують, куди він ляже.","goals":[["otherSlice:0","Прибери ящик із цього аркуша: стань поруч і повернись разом із ним"]],"min":5,"sol":"RhTRR"},{"ch":"Плаский герой","title":"Куб, який виявився мостом","flat":true,"hint":"Ззовні видно: це не куб, а дошка, що лежить упоперек аркуша. Герой бачить лише її зріз. Зіштовхни її в яму.","X":6,"Y":1,"W":4,"h":[["111011"],["111022"],["121022"],["121011"]],"bodies":[{"shape":"beamw","at":[2,0,1]}],"start":[0,0,1],"gem":[5,0,3],"intro":"<b>Нове: довгі шматки.</b> Те, що в аркуші героя виглядає як один кубик, ззовні може виявитись дошкою крізь кілька аркушів. Якщо така дошка впаде в яму, вона стане мостом у кожному з них.","goals":[["sunk:0","Зіштовхни дошку в яму: вона стане мостом у всіх аркушах"],["leftSlice","Перейди мостом в аркуш, де кристал"]],"min":9,"sol":"RRRTRRTLL"},{"ch":"Плаский герой","title":"Поверни дошку","flat":true,"hint":"Яма перетинає всі зрізи. Стань упритул до кінця дошки й повернись <b>разом із нею (Shift+Q)</b>. Для героя дошка не зрушила. Ззовні видно, що вона лягла впоперек.","X":7,"Y":1,"W":4,"h":[["1111011"],["1111011"],["1111011"],["1111011"]],"bodies":[{"shape":"beamx","at":[0,0,3]}],"start":[3,0,3],"gem":[6,0,0],"goals":[["alongW:0","Поверни дошку разом із собою: вона ляже впоперек, уздовж ями"],["sunk:0","Зіштовхни її в яму"]],"min":12,"sol":"HTRTRRRTRRRR"},{"ch":"Плаский герой","title":"Одна дошка, три повороти","hint":"Дошка одна, ям кілька. Застряг? Натисни «Підказка».","flat":true,"X":6,"Y":1,"W":5,"h":[["100111"],["101111"],["102121"],["112121"],["212121"]],"bodies":[{"shape":"crate","at":[1,0,3]},{"shape":"beamw","at":[3,0,1]}],"start":[0,0,1],"gem":[5,0,3],"goals":[["sunk:0","Спершу ящик: зіштовхни його в яму"],["otherSlice:1","Прибери дошку з першого аркуша: поверни її разом із собою"]],"min":18,"sol":"TRRThLLHLLhTLLLTLL"},{"ch":"Об'ємний світ","title":"Сейф","hint":"Те саме, на вимір вище. Тепер ти бачиш кімнату, а не лінію, і ззовні подивитись уже нема звідки. Кристал замуровано з усіх боків. Над і під кімнатою скляні картки: це сусідні зрізи світу. У них на цьому місці стін немає.","X":7,"Y":5,"W":3,"h":[["1111111","1111111","1111111","1111111","1111111"],["1111111","1112221","1112121","1112221","1111111"],["1111111","1111111","1111111","1111111","1111111"]],"bodies":[],"start":[1,2,1],"gem":[4,2,1],"intro":"<b>Розділ 2: тепер плаский герой ти сам.</b> Усе як раніше, але на вимір вище: ти бачиш 3D-кімнату, а світ має ще одну, сховану вісь. Подивитись ззовні вже нема звідки. Натомість над і під кімнатою <b>скляні картки</b>: це сусідні зрізи, як аркуші в першому розділі. <b>Q / E</b> повертає твій зріз, і те, що було на картках, з'являється в кімнаті.","goals":[["turned","Поверни зріз (Q або E)"],["leftSlice","Перейди в сусідній зріз, де навколо кристала немає стін (дивись на картки)"]],"min":8,"sol":"RTLTLLTL"},{"ch":"Об'ємний світ","title":"Дошка крізь зрізи","hint":"Яма тягнеться крізь усі зрізи. Дошка лежить уздовж X. Поверни її разом із собою (Shift+Q), і вона ляже вздовж W.","X":7,"Y":3,"W":4,"h":[["1111011","1111011","1111011"],["1111011","1111011","1111011"],["1111011","1111011","1111011"],["1111011","1111011","1111011"]],"bodies":[{"shape":"beamx","at":[0,1,3]}],"start":[3,1,3],"gem":[6,1,0],"goals":[["alongW:0","Поверни дошку разом із собою: вона ляже крізь зрізи"],["sunk:0","Зіштовхни її в яму"]],"min":12,"sol":"HULLLTRDLLLL"},{"ch":"Об'ємний світ","title":"Дошка в куті","hint":"Тепер у повній кімнаті. Дошка лежить не там і не так.","X":6,"Y":3,"W":3,"h":[["112111","122111","122111"],["112001","122001","122001"],["111111","122111","122111"]],"bodies":[{"shape":"beamx","at":[0,2,2]}],"start":[0,0,0],"gem":[5,2,1],"goals":[["alongW:0","Дошка заважає. Поверни її разом із собою, щоб вона звільнила прохід"]],"min":15,"sol":"UURTRHTLTRRRRTL"},{"ch":"Об'ємний світ","title":"Ліва рукавичка","hint":"Замок у підлозі має форму дзеркальної Г, а твій ключ звичайний. Жодним рухом у цьому зрізі Г не стане своїм відбитком. Поверни ключ разом із собою двічі в один бік.","X":9,"Y":3,"W":4,"h":[["111112222","111112222","111112222"],["111112221","111110221","111110001"],["111112222","111112222","111112222"],["111112222","111112222","111112222"]],"bodies":[{"shape":"ell","at":[1,0,1]}],"start":[0,1,1],"gem":[8,0,1],"intro":"<b>Нове: дзеркало.</b> Два повороти зі шматком <b>в один бік</b> залишають шматок віддзеркаленим, ніби ліва рукавичка стала правою. У звичайному світі так не можна, а з ще одним виміром можна.","goals":[["mirror:0","Віддзеркаль ключ: двічі поверни його разом із собою в один бік"],["sunk:0","Встав ключ у замок у підлозі"]],"min":17,"sol":"RRRRHHURRDLLLDLLL"},{"ch":"Об'ємний світ","title":"Справжня рукавичка","hint":"Цей ключ заввишки у два кубики, як гвинт. Пласку Г можна було б підняти й перевернути, а гвинт у 3D не віддзеркалить жоден поворот. Через W можна: подивись, як він стискається у твій зріз і виростає дзеркальним.","X":9,"Y":3,"W":4,"h":[["111112222","111112222","111112222"],["111112222","111110222","111110011"],["111112222","111112222","111112222"],["111112222","111112222","111112222"]],"bodies":[{"shape":"screw","at":[1,0,1]}],"start":[0,1,1],"gem":[8,0,1],"goals":[["mirror:0","Віддзеркаль гвинт двома поворотами зі шматком в один бік"],["sunk:0","Встав його в замок"]],"min":13,"sol":"RRURRDDhhLLLL"},{"ch":"Об'ємний світ","title":"Дві дошки, одна яма","hint":"Дошок дві, а яма одна. Котра з них стане мостом і звідки її повертати?","X":7,"Y":3,"W":3,"h":[["1111101","1111101","1111101"],["1111101","1111101","1111101"],["1112201","1112201","1112001"]],"bodies":[{"shape":"beamx","at":[2,0,1]},{"shape":"beamx","at":[2,0,0]}],"start":[0,0,0],"gem":[6,1,1],"goals":[["sunk:1","Одна з дошок має лягти в яму мостом"]],"min":14,"sol":"RRTHULLTLDHRRU"},{"ch":"Об'ємний світ","title":"Двоє в коридорі","hint":"Два шматки і чотири повороти зі шматком у найкоротшому розв'язку.","X":5,"Y":4,"W":3,"h":[["11211","12221","11211","11211"],["11211","12221","11211","11211"],["11011","12221","11001","11011"]],"bodies":[{"shape":"crate","at":[3,1,1]},{"shape":"crate","at":[0,1,0]}],"start":[0,2,2],"gem":[4,1,1],"goals":[["sunk:1","Один із ящиків має опинитися в ямі"]],"min":19,"sol":"DTLHHULDTRDHHLLLUTR"},{"ch":"Об'ємний світ","title":"Штовхни вглиб","hint":"Тут мало самих поворотів: без поштовху вздовж Y, від себе чи до себе, кімнату не пройти.","X":6,"Y":3,"W":3,"h":[["111101","110001","111101"],["110001","110001","110101"],["111001","111001","111001"]],"bodies":[{"shape":"crate","at":[1,1,2]}],"start":[0,0,0],"gem":[5,0,2],"min":20,"sol":"RUTRHURDTRDhLLLLLTLL"},{"ch":"Об'ємний світ","title":"Колодязь","hint":"Знову без поштовху вздовж Y не обійтись. Дивись на скляні картки: де в сусідніх зрізах ями?","X":5,"Y":4,"W":4,"h":[["11110","11121","11121","11121"],["11101","11121","11121","11101"],["11121","11121","11121","11021"],["11121","12121","11221","11121"]],"bodies":[{"shape":"crate","at":[2,2,3]}],"start":[0,3,0],"gem":[4,0,2],"min":20,"sol":"RRDTRRHURDDTRDhLLLTL"},{"ch":"Важкі","title":"Обхід","hint":"Стіни в сусідніх зрізах стоять по-різному. Дошку треба принести до ями в іншому зрізі.","X":6,"Y":3,"W":3,"h":[["121121","121121","121121"],["121121","121121","121021"],["111111","111211","111011"]],"bodies":[{"shape":"beamx","at":[1,2,2]}],"start":[0,0,0],"gem":[5,1,2],"intro":"<b>Розділ 3: важкі кімнати.</b> Нових правил тут немає, лише довші плани. Почни з того, куди має потрапити шматок, і рахуй назад.","min":22,"sol":"UUTRRTLDLTRUTRTHTLTRRD"},{"ch":"Важкі","title":"Дошка йде крізь лабіринт","hint":"Дошку доведеться кілька разів переставити поворотами. Думай, де стати.","flat":true,"X":5,"Y":1,"W":5,"h":[["10101"],["10001"],["10011"],["11011"],["11211"]],"bodies":[{"shape":"beamw","at":[0,0,0]}],"start":[0,0,3],"gem":[4,0,4],"min":28,"sol":"THTLTRThTLTHTLTLLHTLLTRRRRTR"},{"ch":"Важкі","title":"Довга дорога","hint":"Тридцять ходів і більше. Спершу план, потім ноги.","X":7,"Y":3,"W":3,"h":[["1111101","1111101","1111101"],["1122101","1112101","1111101"],["1111201","1111221","2111221"]],"bodies":[{"shape":"beamw","at":[2,1,0]}],"start":[0,1,0],"gem":[6,1,2],"min":31,"sol":"RURRDLTRTHDRUTLLURRDRRTRUHLLDTL"},{"ch":"Важкі","title":"Плаский фінал","hint":"Найдовша кімната плаского героя.","flat":true,"X":6,"Y":1,"W":5,"h":[["111112"],["100001"],["110001"],["110021"],["110101"]],"bodies":[{"shape":"beamx","at":[2,0,0]}],"start":[0,0,1],"gem":[5,0,4],"min":35,"sol":"TLTLHTLTRRRTHTRTHTLTHLTRTRTRRRRRTRR"}];
 </script>
 <script>
 const M=window.Mantle,$=id=>document.getElementById(id);
 const PAL=[[.80,.46,.27],[.16,.62,.58],[.58,.47,.88],[.86,.70,.30],[.80,.38,.52],[.40,.62,.90]];
 let showSheet=false,li=0,L,S,hist,anim=null,done=new Set(),dirty=true,whyT=0,queue=[],outside=false,outM=0,bumps=0;
 // ---------- GL
-const cv=$('gl'),gl=cv.getContext('webgl2',{antialias:false});
+const cv=$('gl');let gl=null,glWhy='';try{gl=cv.getContext('webgl2',{antialias:false,powerPreference:'high-performance'});if(!gl)glWhy='браузер не дав WebGL2'}catch(e){glWhy=e.message}
 const VS=`#version 300 es
 in vec2 a;void main(){gl_Position=vec4(a,0,1);}`;
 const FS=`#version 300 es
 precision highp float;precision highp int;
 uniform vec2 uR,uE;uniform vec3 uPl,uDim,uGem,uCam,uGemW;uniform float uUp,uTint,uPz;uniform vec4 uSheet;uniform vec2 uSE,uCA;uniform float uSlab;
 uniform sampler2D uH;
-uniform int uNb,uNf,uNc,uNm;uniform vec4 uB[32],uBc[32];uniform vec4 uF[24];uniform vec4 uFc[24];uniform float uFw[24];
+uniform int uNb,uNf,uNc,uNm;uniform vec4 uB[32],uBc[32];uniform vec4 uF[24];uniform vec4 uFc[24];
 uniform vec4 uCd[4];uniform vec3 uCr;uniform vec4 uMk[16];uniform vec3 uMc[16];
 out vec4 O;
 // gPl: the point the drawn slice passes through; gCard: 0 = your own slice, 1..4 = a glass card with a neighbouring slice
@@ -213,7 +241,7 @@ float scene(vec3 ro,vec3 rd,out vec3 n,out float m,out vec4 info,bool shadow){
  float t=field(ro,rd,nn,hh);if(t>0.){best=t;n=nn;m=1.;info=vec4(hh,0,0,0);}
  vec2 q=XW(ro.x);vec4 o4=vec4(q.x,ro.y,ro.z,q.y),d4=vec4(rd.x*uE.x,rd.y,rd.z,rd.x*uE.y);
  for(int i=0;i<32;i++){if(i>=uNb)break;t=box4(o4,d4,uB[i],vec4(.46,.46,.5,.46),nn);if(t>0.&&t<best){best=t;n=nn;m=2.;info=uBc[i];}}
- for(int i=0;i<24;i++){if(i>=uNf)break;if(int(uF[i].w+.5)!=gCard)continue;t=box3(ro,rd,vec3(uUp+uF[i].x,uF[i].y,uF[i].z),vec3(uFw[i],.46,.5),nn);if(t>0.&&t<best){best=t;n=nn;m=2.;info=uFc[i];}}
+ for(int i=0;i<24;i++){if(i>=uNf)break;if(int(uF[i].w+.5)!=gCard)continue;t=box3(ro,rd,vec3(uUp+uF[i].x,uF[i].y,uF[i].z),vec3(uFc[i].a,.46,.5),nn);if(t>0.&&t<best){best=t;n=nn;m=2.;info=vec4(uFc[i].rgb,0.);}}
  if(gCard==0){vec3 pc=vec3(uUp,uPl.y,uPz);t=sph(ro,rd,pc,.3);if(t>0.&&t<best){best=t;n=normalize(ro+rd*t-pc);m=3.;}}
  vec3 gc;float gs;
  if(gCard==0){gc=vec3(uGem.xy,1.45);gs=uGem.z;}
@@ -282,42 +310,62 @@ void main(){
    col=mix(col,vec3(.62,.84,1.),uSheet.w*(.15+.45*smoothstep(.06,.0,e)));}}
  col=pow(col,vec3(.4545));
  O=vec4(col,1);}`;
-function sh(t,s){const o=gl.createShader(t);gl.shaderSource(o,s);gl.compileShader(o);if(!gl.getShaderParameter(o,gl.COMPILE_STATUS))throw new Error(gl.getShaderInfoLog(o));return o}
-const pr=gl.createProgram();gl.attachShader(pr,sh(gl.VERTEX_SHADER,VS));gl.attachShader(pr,sh(gl.FRAGMENT_SHADER,FS));gl.linkProgram(pr);
-if(!gl.getProgramParameter(pr,gl.LINK_STATUS))throw new Error(gl.getProgramInfoLog(pr));gl.useProgram(pr);
+let pr=null;function sh(t,s){const o=gl.createShader(t);gl.shaderSource(o,s);gl.compileShader(o);if(!gl.getShaderParameter(o,gl.COMPILE_STATUS))throw new Error(gl.getShaderInfoLog(o));return o}
+function initGL(){pr=gl.createProgram();gl.attachShader(pr,sh(gl.VERTEX_SHADER,VS));gl.attachShader(pr,sh(gl.FRAGMENT_SHADER,FS));gl.linkProgram(pr);
+if(!gl.getProgramParameter(pr,gl.LINK_STATUS))throw new Error(gl.getProgramInfoLog(pr)||'link failed');gl.useProgram(pr);
 gl.bindBuffer(gl.ARRAY_BUFFER,gl.createBuffer());gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,3,-1,-1,3]),gl.STATIC_DRAW);
 const al=gl.getAttribLocation(pr,'a');gl.enableVertexAttribArray(al);gl.vertexAttribPointer(al,2,gl.FLOAT,false,0,0);
+gl.bindTexture(gl.TEXTURE_2D,gl.createTexture());gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.NEAREST);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.NEAREST);gl.pixelStorei(gl.UNPACK_ALIGNMENT,1);}
 const U={};const un=n=>U[n]||(U[n]=gl.getUniformLocation(pr,n));
-const tex=gl.createTexture();gl.bindTexture(gl.TEXTURE_2D,tex);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.NEAREST);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.NEAREST);gl.pixelStorei(gl.UNPACK_ALIGNMENT,1);
-function size(){const r=cv.getBoundingClientRect(),dp=Math.min(2,devicePixelRatio||1);cv.width=Math.max(2,Math.round(r.width*dp));cv.height=Math.max(2,Math.round(r.height*dp));gl.viewport(0,0,cv.width,cv.height);dirty=true}
+if(/[?&]lite/.test(location.search)){gl=null;glWhy='плаский режим увімкнено вручну'}
+if(gl){try{initGL()}catch(e){glWhy=String(e.message||e).slice(0,160);gl=null}}
+if(gl)cv.addEventListener('webglcontextlost',ev=>{ev.preventDefault();gl=null;liteMode('3D-картинка зупинилась (відеокарта скинула WebGL)')});
+function size(){if(!gl)return;const r=cv.getBoundingClientRect();let dp=Math.min(1.5,devicePixelRatio||1);const px=r.width*r.height*dp*dp,budget=1.6e6;if(px>budget)dp*=Math.sqrt(budget/px);cv.width=Math.max(2,Math.round(r.width*dp));cv.height=Math.max(2,Math.round(r.height*dp));gl.viewport(0,0,cv.width,cv.height);dirty=true}
 addEventListener('resize',size);
 
+// ---------- when something breaks: say it on screen (a friend can send a screenshot) and keep the game playable on the flat map
+let lite=false;
+function banner(t){const d=$('err');d.innerHTML=t+'<br><span style="opacity:.7;font-size:12px">'+navigator.userAgent.replace(/[<>]/g,'').slice(0,140)+'</span>';d.style.display='block'}
+function liteMode(why){lite=true;showSheet=true;outside=false;outM=0;$('bo').style.display='none';cv.style.display='none';$('cl').innerHTML='';$('bs').style.display='none';
+ banner('3D тут не запустилось: '+why+'. Граємо на пласкій схемі: кожен прямокутник це один зріз світу, твій обведено.');dirty=true}
+addEventListener('error',e=>banner('Помилка: '+String(e.message||e).slice(0,200)));
+addEventListener('unhandledrejection',e=>banner('Помилка: '+String(e.reason&&e.reason.message||e.reason).slice(0,200)));
 // ---------- game flow
-function upload(){const hof=(x,y,w)=>{let h=0;for(let z=0;z<3;z++)if(L.stone[L.idx(x,y,z,w)])h=z+1;return Math.min(h,2)};
+function upload(){if(!gl){outLabel();dirty=true;return}const hof=(x,y,w)=>{let h=0;for(let z=0;z<3;z++)if(L.stone[L.idx(x,y,z,w)])h=z+1;return Math.min(h,2)};
  if(LEVELS[li].flat){const d=new Uint8Array(L.X*L.W);for(let w=0;w<L.W;w++)for(let x=0;x<L.X;x++)d[w*L.X+x]=hof(x,0,w);gl.texImage2D(gl.TEXTURE_2D,0,gl.R8,L.X,L.W,0,gl.RED,gl.UNSIGNED_BYTE,d)}
  else{const d=new Uint8Array(L.X*L.W*L.Y);for(let w=0;w<L.W;w++)for(let y=0;y<L.Y;y++)for(let x=0;x<L.X;x++)d[y*L.X*L.W+x+w*L.X]=hof(x,y,w);gl.texImage2D(gl.TEXTURE_2D,0,gl.R8,L.X*L.W,L.Y,0,gl.RED,gl.UNSIGNED_BYTE,d)}
  outLabel();dirty=true}
 const outLabel=()=>{$('bo').textContent=outside?'Очима героя (C)':'Ззовні (C)'};
-function toggleOut(){if(!LEVELS[li].flat||anim)return;outside=!outside;outLabel();clearHint();dirty=true}
+function toggleOut(){if(!LEVELS[li].flat||anim||lite)return;outside=!outside;outLabel();clearHint();dirty=true}
 const store={get(k){try{return JSON.parse(localStorage.getItem('mantle.'+k))}catch(e){return null}},set(k,v){try{localStorage.setItem('mantle.'+k,JSON.stringify(v))}catch(e){}}};
 for(const k of store.get('done')||[])done.add(k);
 let hints=0,hintA=null,hintS=null;
 // flat rooms start from outside, except the very first one: there the hero bumps into the wall and the camera pulls out by itself
 function start(i){li=i;bumps=0;hints=0;L=M.load(LEVELS[i]);S=L.init;hist=[];anim=null;queue=[];clearHint();
- outside=!!LEVELS[i].flat&&!LEVELS[i].hint2;outM=outside?1:0;upload();$('bo').style.display=LEVELS[i].flat?'':'none';
+ outside=!lite&&!!LEVELS[i].flat&&!LEVELS[i].hint2;outM=outside?1:0;upload();$('bo').style.display=LEVELS[i].flat&&!lite?'':'none';
  $('ht').textContent=(i+1)+'. '+LEVELS[i].title;$('chn').textContent=LEVELS[i].ch?'· '+LEVELS[i].ch:'';$('hb').innerHTML=LEVELS[i].hint;$('hw').textContent='';$('win').style.display='none';
  const lv=$('lv');lv.innerHTML='';let chp=null;LEVELS.forEach((l,k)=>{if(l.ch!==chp){chp=l.ch;const t=document.createElement('span');t.className='chl';t.textContent=chp;lv.appendChild(t)}
   const b=document.createElement('button');b.textContent=k+1;b.title=l.title;if(k===li)b.className='on';else if(done.has(k))b.className='done';b.onclick=()=>{start(k);b.blur()};lv.appendChild(b)});
- store.set('at',i);size();dirty=true}
-const WHY={edge:'Далі краю немає.',wall:'Стіна.',pit:'Попереду яма.',stuck:'Шматок не зрушити: йому щось заважає. Подивись на сусідні зрізи.','nothing to hold':'Поруч зліва чи справа немає шматка, якого можна взяти.','no room to turn it':'Шматку немає куди повернутись: місце зайняте або там край.',loaded:'На шматку щось лежить.'};
-function act(a){if($('win').style.display==='flex'||$('intro').style.display!=='none')return;if(anim){if(queue.length<2)queue.push(a);return}
+ store.set('at',i);showIntro();renderPlan();size();dirty=true}
+const seenIntro=new Set(store.get('intros')||[]);
+function showIntro(){const t=LEVELS[li].intro;if(!t||seenIntro.has(LEVELS[li].title)||$('intro').style.display!=='none'){$('newc').style.display='none';return}$('nt').innerHTML=t;$('newc').style.display='flex'}
+function closeNew(){$('newc').style.display='none';seenIntro.add(LEVELS[li].title);store.set('intros',[...seenIntro])}
+// the plan of the room: goals tick off by themselves once you have reached them
+function renderPlan(){const g=LEVELS[li].goals;if(!g){$('plan').innerHTML='';return}const states=[...hist,S];
+ $('plan').innerHTML='<span class="t">План</span>'+g.map(([k,t],j)=>{const ok=MantleGoals.check(L,{k},states);return `<span class="g ${ok?'ok':''}">${ok?'✓':(j+1)+'.'} ${t}</span>`}).join('')+`<span class="g">${g.length+1}. Дійди до кристала</span>`}
+const WHY={edge:'Далі краю немає.',wall:'Стіна.',pit:'Попереду яма. Її можна засипати: зіштовхни туди шматок.',stuck:'Шматок не зрушити: десь на його шляху щось заважає. Довгий шматок може стояти і в сусідніх зрізах, а там теж має бути вільно.','nothing to hold':'Поруч зліва чи справа немає шматка, якого можна взяти.','no room to turn it':'Шматку немає куди повернутись: місце зайняте або там край.',loaded:'На шматку щось лежить.'};
+function blocked(){return $('win').style.display==='flex'||$('intro').style.display!=='none'||$('newc').style.display==='flex'}
+function act(a){if(blocked())return;if(anim){if(queue.length<2)queue.push(a);return}
  const info={},n=M.step(L,S,a,info);
  if(!n){$('hw').textContent=WHY[info.why]||'';whyT=2.2;dirty=true;
-  if(info.why==='wall'&&LEVELS[li].hint2&&!outside&&++bumps>=1){toggleOut();$('hb').innerHTML=LEVELS[li].hint2}return}
- $('hw').textContent='';hist.push(S);clearHint();
+  if(info.why==='wall'&&LEVELS[li].hint2&&!outside&&++bumps>=1){toggleOut();$('hb').innerHTML=LEVELS[li].hint2;return}
+  if(info.why==='wall')tip(LEVELS[li].flat?'Стіна є лише в цьому аркуші? Поверни аркуш (Q або E) і обійди її через сусідній.':'Стіна є лише в цьому зрізі? Глянь на скляні картки: якщо в сусідньому зрізі тут вільно, поверни зріз (Q або E) і обійди.');
+  if(info.why==='nothing to hold')tip('Поворот зі шматком бере лише шматок, що стоїть упритул <b>ліворуч або праворуч</b> від тебе на екрані.');
+  return}
+ $('hw').textContent='';hist.push(S);clearHint();hideTip();
  const turn='TtHh'.includes(a),hold=a==='H'||a==='h';anim={from:S,to:n,t:0,dur:hold?1.1:turn?.52:.13,turn,hold,dth:turn?(a==='T'||a==='H'?1:-1)*Math.PI/2:0,held:info.heldIds||null};
  S=n;dirty=true}
-function undo(){if(anim||!hist.length)return;S=hist.pop();clearHint();$('win').style.display='none';$('hw').textContent='';dirty=true}
+function undo(){if(anim||!hist.length)return;S=hist.pop();clearHint();hideTip();renderPlan();$('win').style.display='none';$('hw').textContent='';dirty=true}
 function finish(){done.add(li);store.set('done',[...done]);const last=li===LEVELS.length-1,moves=hist.length,best=LEVELS[li].min;
  $('wh').textContent=last?'Усі кімнати пройдено':'Кристал твій';
  $('wt').innerHTML=`Ходів: ${moves}. Найкоротше можливе: ${best}.`+(hints?` Підказок: ${hints}.`:'');
@@ -327,9 +375,11 @@ function keyOf(a){if('LRUD'.includes(a)&&outside){const ux=[1,0,-1,0][S.v],uw=[0
  return {L:'←',R:'→',U:'↑',D:'↓',T:'Q',t:'E',H:'Shift+Q',h:'Shift+E'}[a]}
 const NAME={T:'повернись ⟲',t:'повернись ⟳',H:'повернись разом зі шматком ⟲',h:'повернись разом зі шматком ⟳'};
 const BTN={T:'bt',t:'bt2',H:'bh',h:'bh2'};
+let tipT=0;function tip(t){$('tip').innerHTML=t;$('tip').style.display='block';tipT=5}
+function hideTip(){$('tip').style.display='none';tipT=0}
 function clearHint(){hintA=null;hintS=null;$('hintbox').style.display='none';document.querySelectorAll('.hint').forEach(b=>b.classList.remove('hint'))}
 // hint: the solver finds the shortest way from where you stand; the first press shows the next move, the second makes it
-function hint(){if(anim||$('win').style.display==='flex'||$('intro').style.display!=='none')return;
+function hint(){if(anim||blocked())return;
  if(hintA&&hintS===S){const a=hintA;clearHint();if('LRUD'.includes(a)&&outside){press(keyOf(a))}else act(a);return}
  const r=M.solve(Object.assign({},L,{init:S}),{max:400000});clearHint();
  if(!r.ok){$('hintbox').innerHTML='Звідси кристала вже не дістати. Зроби крок назад (Z) або почни спочатку (R).';$('hintbox').style.display='block';return}
@@ -339,12 +389,15 @@ function hint(){if(anim||$('win').style.display==='flex'||$('intro').style.displ
 // arrows: in the outside view they mean directions in the world; a step along the hidden axis is refused
 function press(k){let a={'→':'R','←':'L','↑':'U','↓':'D'}[k];
  if(outside){const w={R:[1,0],L:[-1,0],U:[0,1],D:[0,-1]}[a],ux=[1,0,-1,0][S.v],uw=[0,1,0,-1][S.v],d=w[0]*ux+w[1]*uw;a=d>0?'R':d<0?'L':'';
-  if(!a){$('hw').textContent='Герой може йти лише вздовж свого аркуша. Повернись (Q або E).';whyT=2.4;return}}
+  if(!a){tip('Герой ходить лише <b>вздовж свого аркуша</b>. Зараз працюють '+padNow().join(' ')+'. Щоб іти в інший бік, поверни аркуш (Q або E).');return}}
+ else if(LEVELS[li].flat&&(a==='U'||a==='D')){tip('Герой плаский: він ходить лише ← і →. Щоб іти в інший бік, поверни аркуш (Q або E).');return}
  act(a)}
+function padNow(){if(!LEVELS[li].flat)return ['←','→','↑','↓'];if(!outside)return ['←','→'];return S.v%2?['↑','↓']:['←','→']}
 const KM={ArrowUp:'↑',ArrowDown:'↓',ArrowLeft:'←',ArrowRight:'→',KeyW:'↑',KeyS:'↓',KeyA:'←',KeyD:'→',Space:'T',KeyQ:'T',KeyE:'t'};
 const toggleSheet=()=>{showSheet=!showSheet;dirty=true};
-function closeIntro(){$('intro').style.display='none';store.set('seen',1)}
+function closeIntro(){$('intro').style.display='none';store.set('seen',1);showIntro()}
 addEventListener('keydown',e=>{if($('intro').style.display!=='none'){if(e.code==='Enter'||e.code==='Space'){e.preventDefault();closeIntro()}return}
+ if($('newc').style.display==='flex'){if(e.code==='Enter'||e.code==='Space'||e.code==='Escape'){e.preventDefault();closeNew()}return}
  if(e.code==='Tab'){e.preventDefault();return toggleSheet()}if(e.code==='KeyR')return start(li);if(e.code==='KeyZ')return undo();if(e.code==='KeyH')return hint();
  if(e.code==='Enter'&&$('win').style.display==='flex')return start((li+1)%LEVELS.length);
  if(e.code==='KeyC')return toggleOut();
@@ -354,7 +407,7 @@ addEventListener('keydown',e=>{if($('intro').style.display!=='none'){if(e.code==
 const tap=(id,fn)=>$(id).onclick=e=>{fn();e.currentTarget.blur()};
 tap('bt',()=>act('T'));tap('bt2',()=>act('t'));tap('bh',()=>act('H'));tap('bh2',()=>act('h'));tap('bo',toggleOut);tap('bs',toggleSheet);tap('bhint',hint);tap('bz',undo);tap('br',()=>start(li));
 document.querySelectorAll('#pad button').forEach(b=>b.onclick=e=>{press(b.textContent);b.blur()});
-$('nx').onclick=()=>start((li+1)%LEVELS.length);$('go').onclick=closeIntro;if(store.get('seen'))$('intro').style.display='none';
+$('nx').onclick=()=>start((li+1)%LEVELS.length);$('go').onclick=closeIntro;$('nok').onclick=closeNew;if(store.get('seen'))$('intro').style.display='none';
 
 // ---------- drawing
 const ease=k=>k*k*(3-2*k);
@@ -381,6 +434,8 @@ function preview(){const out=[];if(anim)return out;
 function setMarks(pv,flat){const mk=[],mc=[];for(const p of pv)if(p.ok)for(const c of p.cells){if(mk.length>=64)break;
   if(flat)mk.push(c[0]+.5,c[2]+.5,1.5,.5);else mk.push(c[0]+.5,c[1]+.5,1.5,c[2]+.5);mc.push(...p.col)}
  const nm=mk.length/4;gl.uniform1i(un('uNm'),nm);if(nm){gl.uniform4fv(un('uMk'),new Float32Array(mk));gl.uniform3fv(un('uMc'),new Float32Array(mc))}}
+function drawLite(){if(!lite)liteMode(glWhy||'WebGL2 недоступний');document.body.classList.add('lite');if($('sheet').parentNode!==$('mid'))$('mid').appendChild($('sheet'));
+ $('axis').innerHTML=(S.v%2?'Ти дивишся вздовж осі <b>W</b>':'Ти дивишся вздовж осі <b>X</b>')+(S.v>=2?' · <b>світ віддзеркалено</b>':'');sheet(preview())}
 function drawFlat(){
  const a=anim,{k,ka,kb}=phases(a),A=a?a.from:S,B=S,m=ease(outM);
  let th=B.v*Math.PI/2;if(a&&a.turn)th=A.v*Math.PI/2+a.dth*(a.hold?kb:k);
@@ -406,6 +461,7 @@ function drawFlat(){
  $('axis').innerHTML=a&&a.hold&&a.t<PA?'Аркуш стоїть: шматок повертається навколо героя':outside?'Ти дивишся ззовні. Герой живе в скляному аркуші.':(B.v%2?'Очима героя. Перед ним вісь <b>W</b>, схована X':'Очима героя. Перед ним вісь <b>X</b>, схована W')+(B.v>=2?' · <b>світ віддзеркалено</b>':'');sheet(pv)}
 const CS=.46,CG=.8,GB=1.5,NS=2; // card scale, gap between cards, cards on each side
 function draw(){
+ if(!gl)return drawLite();
  if(LEVELS[li].flat)return drawFlat();
  gl.uniform4f(un('uSheet'),0,0,0,0);gl.uniform2f(un('uCA'),.30,.90);gl.uniform1f(un('uSlab'),99);
  const a=anim,{k,ka,kb}=phases(a),A=a?a.from:S,B=S;
@@ -433,12 +489,12 @@ function draw(){
  B.bs.forEach((cells,i)=>{const col=PAL[i%PAL.length],held=a&&a.hold&&a.held&&a.held.includes(i);
   if(held&&a.t<PA){for(const cell of A.bs[i]){const q=L.dec(cell),dx=q[0]-A.p[0],dw=q[3]-A.p[2];
      for(const [ci,dh] of [[0,0],...cards.map((cq,j)=>[j+1,cq.dh])]){const ch=chord(dx,dw,phi,e,nn,dh,.46);if(!ch||f3.length>=96)continue;
-      f3.push((ch[0]+ch[1])/2,q[1]+.5,q[2]+.5,ci);fw.push((ch[1]-ch[0])/2);fc.push(col[0],col[1],col[2],0)}}return}
+      f3.push((ch[0]+ch[1])/2,q[1]+.5,q[2]+.5,ci);fc.push(col[0],col[1],col[2],(ch[1]-ch[0])/2)}}return}
   const dz=held?minZ(cells)-minZ(A.bs[i]):0,from=a&&!a.turn?A.bs[i]:cells;
   cells.forEach((cell,j)=>{const q=L.dec(cell),r=L.dec(from[j]===undefined?cell:from[j]);
    b4.push(r[0]+(q[0]-r[0])*k+.5,r[1]+(q[1]-r[1])*k+.5,r[2]+(q[2]-r[2])*k+.5-(held?dz*(1-kb):0),r[3]+(q[3]-r[3])*k+.5);bc.push(col[0],col[1],col[2],a&&a.turn?0:flag(cells,cell,B.v))})});
  const nb=Math.min(32,b4.length/4);gl.uniform1i(un('uNb'),nb);if(nb){gl.uniform4fv(un('uB'),new Float32Array(b4.slice(0,nb*4)));gl.uniform4fv(un('uBc'),new Float32Array(bc.slice(0,nb*4)))}
- const nf=Math.min(24,f3.length/4);gl.uniform1i(un('uNf'),nf);if(nf){gl.uniform4fv(un('uF'),new Float32Array(f3.slice(0,nf*4)));gl.uniform4fv(un('uFc'),new Float32Array(fc.slice(0,nf*4)));gl.uniform1fv(un('uFw'),new Float32Array(fw.slice(0,nf)))}
+ const nf=Math.min(24,f3.length/4);gl.uniform1i(un('uNf'),nf);if(nf){gl.uniform4fv(un('uF'),new Float32Array(f3.slice(0,nf*4)));gl.uniform4fv(un('uFc'),new Float32Array(fc.slice(0,nf*4)))}
  const gx=L.gem[0]+.5,gw=L.gem[2]+.5,gu=up+(gx-px)*c+(gw-pw)*s,off=Math.abs(-(gx-px)*s+(gw-pw)*c);
  gl.uniform3f(un('uGem'),gu,L.gem[1]+.5,Math.max(0,1-off*off));
  const pv=preview();setMarks(pv,false);
@@ -454,10 +510,10 @@ function draw(){
  sheet(pv)}
 // the flat contact sheet (hidden by default, Tab shows it): every slice along the hidden axis, top-down
 function sheet(pv){
- let note='';for(const p of pv||[])note+=(note?' · ':'')+`поворот ${p.nm} зі шматком: `+(p.ok?`<span style="color:rgb(${p.col.map(x=>x*255|0)})">ляже, де світиться</span>`:'<span style="color:#ff6b5e">не вийде</span>');
+ let note='';for(const p of pv||[])note+=(note?' · ':'Поруч шматок. ')+`${p.act==='H'?'Shift+Q':'Shift+E'}: `+(p.ok?`<span style="color:rgb(${p.col.map(x=>x*255|0)})">ляже на ${p.act==='H'?'сині':'рожеві'} кубики</span>`:'<span style="color:#ff6b5e">не вийде, немає місця</span>');
  $('sl').innerHTML=(LEVELS[li].flat?'':'Скляні картки: сусідні зрізи вздовж схованої осі. ')+(S.v>=2?'Ліво і право помінялись місцями. ':'')+note;
  const cvs=$('sheet');if(!showSheet){cvs.style.display='none';return}cvs.style.display='block';
- const v=S.v,xv=v%2===0,rev=v>=2,Un=xv?L.X:L.W,Hn=xv?L.W:L.X,cs=Math.max(8,Math.min(15,Math.floor((innerWidth-28-Hn*10)/(Hn*Un)))),gap=10,dpr=Math.min(2,devicePixelRatio||1);
+ const v=S.v,xv=v%2===0,rev=v>=2,Un=xv?L.X:L.W,Hn=xv?L.W:L.X,cs=Math.max(8,Math.min(lite?44:15,Math.floor((innerWidth-28-Hn*10)/(Hn*Un)),lite?Math.floor(($('mid').clientHeight-40)/L.Y):99)),gap=10,dpr=Math.min(2,devicePixelRatio||1);
  const Wp=Hn*(Un*cs+gap),Hp=L.Y*cs+16;cvs.width=Wp*dpr;cvs.height=Hp*dpr;cvs.style.width=Wp+'px';cvs.style.height=Hp+'px';
  const g=cvs.getContext('2d');g.scale(dpr,dpr);const o=M.occ(L,S),ph=xv?S.p[2]:S.p[0];
  const rgb=(c,m)=>`rgb(${c.map(x=>Math.round(255*(m?x*.55+.3:x))).join(',')})`;
@@ -477,7 +533,8 @@ function loop(t){const dt=Math.min(.05,(t-last)/1000);last=t;
  if(anim){anim.t+=dt;dirty=true;if(anim.t>=anim.dur){anim=null;if(M.won(L,S))finish();else if(queue.length){const q=queue.shift();draw();act(q)}}}
  const tm=outside?1:0;if(outM!==tm){outM=Math.max(0,Math.min(1,outM+(tm>outM?1:-1)*dt/.9));dirty=true}
  if(whyT>0){whyT-=dt;if(whyT<=0)$('hw').textContent=''}
- if(dirty){dirty=false;draw()}
+ if(tipT>0){tipT-=dt;if(tipT<=0)hideTip()}
+ if(dirty){dirty=false;draw();if(!anim){renderPlan();const ok=padNow();document.querySelectorAll('#pad button').forEach(b=>b.classList.toggle('off',!ok.includes(b.textContent)))}}
  requestAnimationFrame(loop)}
 window.__m={get S(){return S},get L(){return L},act,start,hint,closeIntro,run:async s=>{for(const a of s){act(a);let n=0;while(anim&&n++<200)await new Promise(r=>setTimeout(r,20))}},get won(){return $('win').style.display==='flex'},levels:LEVELS};
 {const at=store.get('at');start(Number.isInteger(at)&&at<LEVELS.length?at:0)}requestAnimationFrame(loop);

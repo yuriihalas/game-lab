@@ -1,0 +1,484 @@
+<!doctype html>
+<html lang="uk"><head><meta charset="utf-8"><meta name="robots" content="noindex,nofollow"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mantle</title>
+<style>
+:root{--ink:#ECE8DF;--muted:#A9A498;--bg:#12141a;--card:rgba(18,20,26,.82);--gold:#F2C46B;--line:rgba(255,255,255,.09)}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;overflow:hidden;display:flex;flex-direction:column;-webkit-tap-highlight-color:transparent}
+#top{padding:10px 16px 8px;background:var(--card);border-bottom:1px solid var(--line)}
+#bar{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+#logo{font-weight:700;letter-spacing:.14em;font-size:13px;color:var(--gold)}
+#top h1{margin:0;font-size:17px;font-weight:600}
+#chn{font-size:12px;color:var(--muted)}
+#hb{font-size:14px;line-height:1.45;max-width:820px;margin-top:4px}
+#hw{font-size:13px;color:#F09A8E;min-height:18px;margin-top:2px}
+#lv{display:flex;gap:5px;margin-top:6px;flex-wrap:wrap;align-items:center}
+#lv .chl{font-size:11px;color:var(--muted);margin:0 2px 0 8px;text-transform:uppercase;letter-spacing:.06em}
+#lv .chl:first-child{margin-left:0}
+button{font:inherit;font-size:13px;color:var(--ink);background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.15);border-radius:9px;padding:5px 10px;cursor:pointer;touch-action:manipulation}
+button:hover{background:rgba(255,255,255,.13)}
+#lv button{min-width:30px;padding:4px 7px}
+button.on{background:var(--gold);color:#1b1608;border-color:var(--gold)}
+button.done{border-color:rgba(242,196,107,.75);color:var(--gold)}
+button.hint{box-shadow:0 0 0 2px #7fe0a8,0 0 14px #7fe0a8;border-color:#7fe0a8}
+#mid{position:relative;flex:1;min-height:0}
+#gl{position:absolute;inset:0;width:100%;height:100%;display:block}
+#act{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px;align-items:center}
+#act button{font-size:13px;padding:7px 11px;border-radius:10px}
+#bhint{background:rgba(127,224,168,.14);border-color:rgba(127,224,168,.55);color:#c9f5da}
+#axis{position:absolute;left:12px;top:10px;font-size:13px;color:var(--muted);background:var(--card);padding:7px 10px;border-radius:10px}
+#axis b{color:var(--gold);font-weight:600}
+#hintbox{position:absolute;left:50%;top:10px;transform:translateX(-50%);font-size:14px;background:rgba(20,40,30,.9);border:1px solid rgba(127,224,168,.6);color:#d8f7e4;padding:8px 14px;border-radius:12px;display:none;max-width:90%;text-align:center}
+#hintbox b{color:#fff}
+#pad{position:absolute;right:14px;bottom:14px;display:grid;grid-template-columns:repeat(3,52px);grid-template-rows:repeat(2,52px);gap:6px}
+#pad button{font-size:22px;padding:0;border-radius:12px;background:rgba(18,20,26,.72)}
+#pad .u{grid-column:2;grid-row:1}#pad .l{grid-column:1;grid-row:2}#pad .d{grid-column:2;grid-row:2}#pad .r{grid-column:3;grid-row:2}
+#bot{padding:8px 16px 10px;background:var(--card);border-top:1px solid var(--line)}
+#bot .l{font-size:12px;color:var(--muted);margin-bottom:4px}
+#sheet{display:none;max-width:100%;margin-top:6px}
+#cl{position:absolute;inset:0;pointer-events:none}
+.cl{position:absolute;transform:translate(-100%,-50%);font-size:12px;color:#9fc3ff;white-space:nowrap;text-shadow:0 1px 2px #000}
+.cl.me{color:var(--gold)}
+.cl.left{transform:translate(0,-50%)}
+#keys{font-size:12px;color:var(--muted);line-height:1.5}
+.ov{position:absolute;inset:0;display:none;align-items:center;justify-content:center;background:rgba(8,8,12,.55);padding:16px}
+.ov>div{background:#171a22;border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:22px 26px;max-width:460px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+.ov h2{margin:0 0 10px;font-weight:600;color:var(--gold)}
+.ov p{margin:0 0 12px;color:#cfcabe;line-height:1.5;font-size:15px}
+.ov .k{font-size:13px;color:var(--muted);text-align:left;margin:0 0 16px;line-height:1.7}
+.ov kbd{font:inherit;font-size:12px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:5px;padding:0 5px;color:var(--ink)}
+.ov button{font-size:15px;padding:9px 20px;background:var(--gold);color:#1b1608;border-color:var(--gold);font-weight:600}
+#intro{display:flex}
+@media (max-width:700px){#keys,#bs,.kk{display:none}#top{padding:8px 12px 6px}#bot{padding:6px 12px 8px}#hb{font-size:13px}#act button{padding:8px 9px;font-size:12px}#pad{grid-template-columns:repeat(3,48px);grid-template-rows:repeat(2,48px)}}
+@media (hover:hover) and (pointer:fine) and (min-width:701px){#pad{opacity:.55}#pad:hover{opacity:1}}
+</style></head><body>
+<div id="top"><div id="bar"><span id="logo">MANTLE</span><h1 id="ht"></h1><span id="chn"></span></div><div id="hb"></div><div id="hw"></div>
+ <div id="lv"></div></div>
+<div id="mid"><canvas id="gl"></canvas>
+ <div id="axis"></div><div id="cl"></div><div id="hintbox"></div>
+ <div id="pad"><button class="u" data-k="U">↑</button><button class="l" data-k="L">←</button><button class="d" data-k="D">↓</button><button class="r" data-k="R">→</button></div>
+ <div id="win" class="ov"><div><h2 id="wh"></h2><p id="wt"></p><button id="nx"></button></div></div>
+ <div id="intro" class="ov"><div><h2>Mantle</h2>
+  <p>Головоломка про четвертий вимір. Ти бачиш лише <b>зріз</b> світу, як аркуш скла. Стіна, суцільна в твоєму зрізі, у сусідньому може бути відкрита.</p>
+  <p>Мета кожної кімнати: дійти до <b style="color:var(--gold)">кристала</b>.</p>
+  <div class="k"><kbd>←</kbd> <kbd>→</kbd> <kbd>↑</kbd> <kbd>↓</kbd> іти й штовхати<br><kbd>Q</kbd> <kbd>E</kbd> повернутись: зріз обертається навколо тебе<br><kbd>Shift</kbd>+<kbd>Q</kbd> / <kbd>E</kbd> повернутись разом зі шматком, що поруч зліва чи справа<br><kbd>H</kbd> підказка: наступний крок · <kbd>Z</kbd> крок назад · <kbd>R</kbd> спочатку</div>
+  <button id="go">Почати</button></div></div></div>
+<div id="bot"><div id="act"><button id="bhint">💡 Підказка <span class="kk">(H)</span></button><button id="bt">⟲ Повернутись <span class="kk">(Q)</span></button><button id="bt2">⟳ Повернутись <span class="kk">(E)</span></button><button id="bh">⟲ зі шматком <span class="kk">(Shift+Q)</span></button><button id="bh2">⟳ зі шматком <span class="kk">(Shift+E)</span></button><button id="bz">↶ Крок назад <span class="kk">(Z)</span></button><button id="br">Спочатку <span class="kk">(R)</span></button><button id="bo" style="display:none"></button><button id="bs">Схема зрізів <span class="kk">(Tab)</span></button></div><div class="l" id="sl"></div><canvas id="sheet"></canvas>
+ <div id="keys">Стрілки або WASD: іти й штовхати · Q / E: повернутись · Shift+Q / Shift+E: повернутись разом зі шматком, якого торкаєшся збоку · H: підказка · Tab: пласка схема всіх зрізів · Z: крок назад · R: спочатку</div></div>
+<script>
+// Mantle grid engine v4. Pure functions, no DOM. Works in node and in a page.
+// World: X×Y×3×W cells. z=0 is the ground layer (stone = floor, empty = pit), z=1 is where you walk, z=2 is wall tops.
+// Stone is fixed. Pieces (crates, beams, diamonds) are rigid sets of cells: pushed as one, falling as one.
+// Four views, v=0..3: the axis that runs left→right on screen is +x, +w, −x, −w. In views 2 and 3 the world looks mirrored.
+// Actions: L R U D walk/push. T turns you a quarter turn one way, t the other way. H and h do the same while holding every
+// piece that touches your left or right side: the piece is rotated around you in the x–w plane, so on your screen it does not move.
+// Two hold-turns the same way leave a piece mirrored relative to the world.
+(function(root){
+const SHAPES={crate:[[0,0,0]],beamx:[[0,0,0],[1,0,0],[2,0,0]],beamy:[[0,0,0],[0,1,0],[0,2,0]],beamw:[[0,0,0],[0,0,1],[0,0,2]],
+  ell:[[0,0,0],[1,0,0],[2,0,0],[2,1,0]],jay:[[0,0,0],[1,0,0],[2,0,0],[0,1,0]],diamond:[[0,0,0],[1,0,0],[-1,0,0],[0,1,0],[0,-1,0],[0,0,1],[0,0,-1]],
+  // two cubes tall: offsets are [x,y,w,up]. A 3D screw is chiral: no turn in 3D makes it its mirror image, only a turn through w does.
+  screw:[[0,0,0],[1,0,0],[1,1,0],[1,1,0,1]],screwm:[[0,0,0],[-1,0,0],[-1,1,0],[-1,1,0,1]]};
+function load(def){
+  const X=def.X,Y=def.Y,Z=3,W=def.W,XY=X*Y,XYZ=XY*Z;
+  const idx=(x,y,z,w)=>((w*Z+z)*Y+y)*X+x,dec=i=>[i%X,(i/X|0)%Y,(i/XY|0)%Z,i/XYZ|0];
+  const stone=new Uint8Array(XYZ*W);
+  for(let w=0;w<W;w++)for(let r=0;r<Y;r++){const y=Y-1-r,row=def.h[w][r];for(let x=0;x<X;x++){const h=+row[x];for(let z=0;z<h;z++)stone[idx(x,y,z,w)]=1}}
+  const L={X,Y,Z,W,idx,dec,stone,name:def.name||'',def};
+  const s={p:[-9,-9,-9],v:0,bs:[]};
+  for(const b of def.bodies||[]){let cells=SHAPES[b.shape].map(o=>idx(b.at[0]+o[0],b.at[1]+o[1],1+(o[3]||0),b.at[2]+o[2])).sort((p,q)=>p-q);
+    s.bs.push(cells);const i=s.bs.length-1;s.bs[i]=settle(L,s,i)}
+  L.gem=def.gem.slice();L.init={p:def.start.slice(),v:0,bs:s.bs};return L}
+function occ(L,s){const m=new Map();s.bs.forEach((b,i)=>{for(const c of b)m.set(c,i)});return m}
+// place body i at new cells if every cell is inside, not stone, not another body, not the player
+function fits(L,s,o,i,cells,also){for(const c of cells){if(c<0)return false;if(L.stone[c])return false;const j=o.get(c);if(j!==undefined&&j!==i&&!(also&&also.has(j)))return false;
+    const q=L.dec(c);if(q[2]===1&&q[0]===s.p[0]&&q[1]===s.p[1]&&q[3]===s.p[2])return false}return true}
+function shift(L,cells,d){const out=[];for(const c of cells){const q=L.dec(c),x=q[0]+d[0],y=q[1]+d[1],z=q[2]+d[2],w=q[3]+d[3];
+    out.push(x<0||y<0||z<0||w<0||x>=L.X||y>=L.Y||z>=L.Z||w>=L.W?-1:L.idx(x,y,z,w))}return out.sort((p,q)=>p-q)}
+function settle(L,s,i){let cells=s.bs[i];for(;;){const o=occ(L,s),n=shift(L,cells,[0,0,-1,0]);if(!fits(L,s,o,i,n))return cells;cells=n;s.bs[i]=n}}
+function loaded(L,o,b,i){for(const c of b){const q=L.dec(c);if(q[2]+1<L.Z){const j=o.get(L.idx(q[0],q[1],q[2]+1,q[3]));if(j!==undefined&&j!==i)return true}}return false}
+const solid=(L,o,x,y,z,w)=>x<0||y<0||w<0||x>=L.X||y>=L.Y||w>=L.W?3:L.stone[L.idx(x,y,z,w)]?1:o.has(L.idx(x,y,z,w))?2:0;
+function step(L,s,a,info){
+  info=info||{};const [px,py,pw]=s.p;
+  if(a==='T'||a==='t')return {p:s.p,v:(s.v+(a==='T'?1:3))%4,bs:s.bs};
+  const o=occ(L,s),ux=[1,0,-1,0][s.v],uw=[0,1,0,-1][s.v];
+  if(a==='H'||a==='h'){ // turn together with the pieces touching your left and right
+    const pos=a==='H';const held=new Set();for(const sg of [-1,1]){const x=px+sg*ux,w=pw+sg*uw;if(solid(L,o,x,py,1,w)===2)held.add(o.get(L.idx(x,py,1,w)))}
+    if(!held.size){info.why='nothing to hold';return null}
+    const ns={p:s.p,v:(s.v+(pos?1:3))%4,bs:s.bs.slice()},rot=new Map();info.land=[];info.heldIds=[...held];
+    for(const i of held){if(loaded(L,o,s.bs[i],i)){info.why='loaded';return null}
+      const cells=[];for(const c of s.bs[i]){const q=L.dec(c),dx=q[0]-px,dw=q[3]-pw,nx=px+(pos?-dw:dw),nw=pw+(pos?dx:-dx);
+        info.land.push([nx,q[1],nw]);cells.push(nx<0||nw<0||nx>=L.X||nw>=L.W?-1:L.idx(nx,q[1],q[2],nw))}
+      rot.set(i,cells.sort((p,q)=>p-q))}
+    const all=new Set();for(const [i,cells] of rot){if(!fits(L,s,o,i,cells,held)){info.why='no room to turn it';return null}for(const c of cells){if(all.has(c)){info.why='no room to turn it';return null}all.add(c)}}
+    for(const [i,cells] of rot)ns.bs[i]=cells;for(const i of held)settle(L,ns,i);info.held=held.size;return ns}
+  const d={L:[-ux,0,0,-uw],R:[ux,0,0,uw],U:[0,1,0,0],D:[0,-1,0,0]}[a];if(!d)return null;
+  const tx=px+d[0],ty=py+d[1],tw=pw+d[3];let t=solid(L,o,tx,ty,1,tw),ns={p:[tx,ty,tw],v:s.v,bs:s.bs};
+  if(t===3){info.why='edge';return null}if(t===1){info.why='wall';return null}
+  if(t===2){const i=o.get(L.idx(tx,ty,1,tw)),n=shift(L,s.bs[i],d);
+    if(loaded(L,o,s.bs[i],i)||!fits(L,s,o,i,n)){info.why='stuck';return null}
+    ns={p:[tx,ty,tw],v:s.v,bs:s.bs.slice()};ns.bs[i]=n;const keep=ns.p;ns.p=s.p;settle(L,ns,i);ns.p=keep;info.pushed=true;
+    if(solid(L,occ(L,ns),tx,ty,1,tw)!==0){info.why='stuck';return null}}
+  const o2=info.pushed?occ(L,ns):o;if(solid(L,o2,tx,ty,0,tw)===0){info.why='pit';return null}
+  return ns}
+const won=(L,s)=>s.p[0]===L.gem[0]&&s.p[1]===L.gem[1]&&s.p[2]===L.gem[2];
+const key=(L,s)=>s.p.join(',')+'|'+s.v+'|'+s.bs.map(b=>b.join(',')).join(';');
+function solve(L,opt){
+  opt=opt||{};const max=opt.max||300000,acts=(opt.acts||'LRUDTtHh').split('');
+  const seen=new Map(),q=[L.init];seen.set(key(L,L.init),null);
+  for(let h=0;h<q.length;h++){const s=q[h];
+    if(won(L,s)){let path='',k=key(L,s);for(;;){const e=seen.get(k);if(!e)break;path=e[1]+path;k=e[0]}
+      let pushes=0,st=L.init;for(const a of path){const inf={};st=step(L,st,a,inf);if(inf.pushed)pushes++}
+      return {ok:true,len:path.length,path,turns:(path.match(/T/gi)||[]).length,holds:(path.match(/H/gi)||[]).length,pushes,states:seen.size}}
+    if(q.length>max)return {ok:false,capped:true,states:seen.size};
+    const k=key(L,s);for(const a of acts){const inf={},n=step(L,s,a,inf);if(!n||(opt.filter&&!opt.filter(a,inf)))continue;const nk=key(L,n);if(seen.has(nk))continue;seen.set(nk,[k,a]);q.push(n)}}
+  return {ok:false,states:seen.size}}
+// Text picture of the whole state: every slice along the hidden axis as a top-down plan (the "contact sheet").
+function look(L,s){
+  const v=s.v,o=occ(L,s),xv=v%2===0,U=xv?L.X:L.W,Hn=xv?L.W:L.X,ax=xv?'x':'w',hx=xv?'w':'x',ph=xv?s.p[2]:s.p[0],rev=v>=2;
+  const ch=(u,y,h)=>{const x=xv?u:h,w=xv?h:u;
+    if(x===s.p[0]&&y===s.p[1]&&w===s.p[2])return '@';if(x===L.gem[0]&&y===L.gem[1]&&w===L.gem[2])return '*';
+    if(L.stone[L.idx(x,y,1,w)])return '#';
+    const b1=o.get(L.idx(x,y,1,w));if(b1!==undefined)return String.fromCharCode(65+b1);
+    const b0=o.get(L.idx(x,y,0,w));if(b0!==undefined)return String.fromCharCode(97+b0);
+    return L.stone[L.idx(x,y,0,w)]?'.':' '};
+  const cols=[];for(let i=0;i<U;i++)cols.push(rev?U-1-i:i);
+  let out=`View ${v}: left→right on screen is ${ax} ${rev?'DEcreasing (the world looks mirrored)':'increasing'}; each panel's columns left→right are ${ax}=${cols.join(',')}. Rows: y, top row is y=${L.Y-1}. Hidden axis: ${hx}.\n`;
+  out+=`You (@) are at x=${s.p[0]} y=${s.p[1]} w=${s.p[2]}. Crystal (*) at x=${L.gem[0]} y=${L.gem[1]} w=${L.gem[2]}. R moves ${ax}${rev?'−1':'+1'}.\nAll slices along ${hx}, yours marked >>:\n`;
+  for(let y=L.Y-1;y>=0;y--){let row='';for(let h=0;h<Hn;h++){row+='  |';for(const u of cols)row+=ch(u,y,h);row+='|'}out+=row+'\n'}
+  let lab='';for(let h=0;h<Hn;h++){const t=(h===ph?'>>':'  ')+hx+'='+h;lab+=' '+t.padEnd(U+3)}
+  return out+lab+'\nlegend: . floor, # wall, blank = pit, A B C = movable pieces (same letter = one rigid piece), a b c = a piece sunk in a pit (now floor)'}
+// How much the room needs the third walkable axis y: 2 = a piece must be pushed along y, 1 = you must at least step along y, 0 = a flat x–w room.
+function needY(L,opt){const o=Object.assign({},opt||{});
+  const noStep=solve(L,Object.assign({},o,{acts:'LRTtHh'}));if(noStep.ok||noStep.capped)return 0;
+  const noPush=solve(L,Object.assign({},o,{filter:(a,inf)=>!((a==='U'||a==='D')&&inf.pushed)}));return noPush.ok||noPush.capped?1:2}
+root.Mantle={load,step,solve,won,look,key,occ,needY,SHAPES};
+})(typeof module!=='undefined'?module.exports:window);
+
+const LEVELS=[{"ch":"Плаский герой","title":"Плаский герой","flat":true,"hint":"Дійди до кристала. Стрілки або A / D.","hint2":"Камера виїхала назовні. Герой плаский: він живе в скляному аркуші й бачить лише його зріз. Стіна є тільки в цьому зрізі. Натисни <b>Q</b>: аркуш повернеться, і герой обійде стіну. <b>C</b> повертає погляд героя.","X":7,"Y":1,"W":4,"h":[["1112221"],["1112121"],["1111111"],["1111111"]],"bodies":[],"start":[1,0,1],"gem":[4,0,1],"min":8,"sol":"RTRTLLTR"},{"ch":"Плаский герой","title":"Ящик у яму","flat":true,"hint":"Яма перетинає всі зрізи. Зіштовхни ящик у яму: шматок, що впав у яму, стає підлогою.","X":5,"Y":1,"W":3,"h":[["11011"],["11011"],["11011"]],"bodies":[{"shape":"crate","at":[1,0,1]}],"start":[0,0,1],"gem":[4,0,1],"min":4,"sol":"RRRR"},{"ch":"Плаский герой","title":"Візьми ящик із собою","flat":true,"hint":"Ящик заважає, а обійти його в цьому зрізі нема як. Стань поруч і <b>повернись разом із ним (Shift+Q або Shift+E)</b>: ящик піде в сусідній зріз. Куди саме, показують світлі кубики.","X":4,"Y":1,"W":3,"h":[["1121"],["1021"],["1111"]],"bodies":[{"shape":"crate","at":[1,0,2]}],"start":[0,0,2],"gem":[3,0,2],"min":5,"sol":"RhTRR"},{"ch":"Плаский герой","title":"Куб, який виявився мостом","flat":true,"hint":"Ззовні видно: це не куб, а дошка, що лежить упоперек аркуша. Герой бачить лише її зріз. Зіштовхни її в яму.","X":6,"Y":1,"W":4,"h":[["111011"],["111022"],["121022"],["121011"]],"bodies":[{"shape":"beamw","at":[2,0,1]}],"start":[0,0,1],"gem":[5,0,3],"min":9,"sol":"RRRTRRTLL"},{"ch":"Плаский герой","title":"Поверни дошку","flat":true,"hint":"Яма перетинає всі зрізи. Стань упритул до кінця дошки й повернись <b>разом із нею (Shift+Q)</b>. Для героя дошка не зрушила. Ззовні видно, що вона лягла впоперек.","X":7,"Y":1,"W":4,"h":[["1111011"],["1111011"],["1111011"],["1111011"]],"bodies":[{"shape":"beamx","at":[0,0,3]}],"start":[3,0,3],"gem":[6,0,0],"min":12,"sol":"HTRTRRRTRRRR"},{"ch":"Плаский герой","title":"Одна дошка, три повороти","hint":"Дошка одна, ям кілька. Застряг? Натисни «Підказка».","flat":true,"X":6,"Y":1,"W":5,"h":[["100111"],["101111"],["102121"],["112121"],["212121"]],"bodies":[{"shape":"crate","at":[1,0,3]},{"shape":"beamw","at":[3,0,1]}],"start":[0,0,1],"gem":[5,0,3],"min":18,"sol":"TRRThLLHLLhTLLLTLL"},{"ch":"Об'ємний світ","title":"Сейф","hint":"Те саме, на вимір вище. Тепер ти бачиш кімнату, а не лінію, і ззовні подивитись уже нема звідки. Кристал замуровано з усіх боків. Над і під кімнатою скляні картки: це сусідні зрізи світу. У них на цьому місці стін немає.","X":7,"Y":5,"W":3,"h":[["1111111","1111111","1111111","1111111","1111111"],["1111111","1112221","1112121","1112221","1111111"],["1111111","1111111","1111111","1111111","1111111"]],"bodies":[],"start":[1,2,1],"gem":[4,2,1],"min":8,"sol":"RTLTLLTL"},{"ch":"Об'ємний світ","title":"Дошка крізь зрізи","hint":"Яма тягнеться крізь усі зрізи. Дошка лежить уздовж X. Поверни її разом із собою (Shift+Q), і вона ляже вздовж W.","X":7,"Y":3,"W":4,"h":[["1111011","1111011","1111011"],["1111011","1111011","1111011"],["1111011","1111011","1111011"],["1111011","1111011","1111011"]],"bodies":[{"shape":"beamx","at":[0,1,3]}],"start":[3,1,3],"gem":[6,1,0],"min":12,"sol":"HULLLTRDLLLL"},{"ch":"Об'ємний світ","title":"Дошка в куті","hint":"Тепер у повній кімнаті. Дошка лежить не там і не так.","X":6,"Y":3,"W":3,"h":[["112111","122111","122111"],["112001","122001","122001"],["111111","122111","122111"]],"bodies":[{"shape":"beamx","at":[0,2,2]}],"start":[0,0,0],"gem":[5,2,1],"min":15,"sol":"UURTRHTLTRRRRTL"},{"ch":"Об'ємний світ","title":"Ліва рукавичка","hint":"Замок у підлозі має форму дзеркальної Г, а твій ключ звичайний. Жодним рухом у цьому зрізі Г не стане своїм відбитком. Поверни ключ разом із собою двічі в один бік.","X":9,"Y":3,"W":4,"h":[["111112222","111112222","111112222"],["111112221","111110221","111110001"],["111112222","111112222","111112222"],["111112222","111112222","111112222"]],"bodies":[{"shape":"ell","at":[1,0,1]}],"start":[0,1,1],"gem":[8,0,1],"min":17,"sol":"RRRRHHURRDLLLDLLL"},{"ch":"Об'ємний світ","title":"Справжня рукавичка","hint":"Цей ключ заввишки у два кубики, як гвинт. Пласку Г можна було б підняти й перевернути, а гвинт у 3D не віддзеркалить жоден поворот. Через W можна: подивись, як він стискається у твій зріз і виростає дзеркальним.","X":9,"Y":3,"W":4,"h":[["111112222","111112222","111112222"],["111112222","111110222","111110011"],["111112222","111112222","111112222"],["111112222","111112222","111112222"]],"bodies":[{"shape":"screw","at":[1,0,1]}],"start":[0,1,1],"gem":[8,0,1],"min":13,"sol":"RRURRDDhhLLLL"},{"ch":"Об'ємний світ","title":"Дві дошки, одна яма","hint":"Дошок дві, а яма одна. Котра з них стане мостом і звідки її повертати?","X":7,"Y":3,"W":3,"h":[["1111101","1111101","1111101"],["1111101","1111101","1111101"],["1112201","1112201","1112001"]],"bodies":[{"shape":"beamx","at":[2,0,1]},{"shape":"beamx","at":[2,0,0]}],"start":[0,0,0],"gem":[6,1,1],"min":14,"sol":"RRTHULLTLDHRRU"},{"ch":"Об'ємний світ","title":"Двоє в коридорі","hint":"Два шматки і чотири повороти зі шматком у найкоротшому розв'язку.","X":5,"Y":4,"W":3,"h":[["11211","12221","11211","11211"],["11211","12221","11211","11211"],["11011","12221","11001","11011"]],"bodies":[{"shape":"crate","at":[3,1,1]},{"shape":"crate","at":[0,1,0]}],"start":[0,2,2],"gem":[4,1,1],"min":19,"sol":"DTLHHULDTRDHHLLLUTR"},{"ch":"Об'ємний світ","title":"Штовхни вглиб","hint":"Тут мало самих поворотів: без поштовху вздовж Y, від себе чи до себе, кімнату не пройти.","X":6,"Y":3,"W":3,"h":[["111101","110001","111101"],["110001","110001","110101"],["111001","111001","111001"]],"bodies":[{"shape":"crate","at":[1,1,2]}],"start":[0,0,0],"gem":[5,0,2],"min":20,"sol":"RUTRHURDTRDhLLLLLTLL"},{"ch":"Об'ємний світ","title":"Колодязь","hint":"Знову без поштовху вздовж Y не обійтись. Дивись на скляні картки: де в сусідніх зрізах ями?","X":5,"Y":4,"W":4,"h":[["11110","11121","11121","11121"],["11101","11121","11121","11101"],["11121","11121","11121","11021"],["11121","12121","11221","11121"]],"bodies":[{"shape":"crate","at":[2,2,3]}],"start":[0,3,0],"gem":[4,0,2],"min":20,"sol":"RRDTRRHURDDTRDhLLLTL"},{"ch":"Важкі","title":"Обхід","hint":"Стіни в сусідніх зрізах стоять по-різному. Дошку треба принести до ями в іншому зрізі.","X":6,"Y":3,"W":3,"h":[["121121","121121","121121"],["121121","121121","121021"],["111111","111211","111011"]],"bodies":[{"shape":"beamx","at":[1,2,2]}],"start":[0,0,0],"gem":[5,1,2],"min":22,"sol":"UUTRRTLDLTRUTRTHTLTRRD"},{"ch":"Важкі","title":"Дошка йде крізь лабіринт","hint":"Дошку доведеться кілька разів переставити поворотами. Думай, де стати.","flat":true,"X":5,"Y":1,"W":5,"h":[["10101"],["10001"],["10011"],["11011"],["11211"]],"bodies":[{"shape":"beamw","at":[0,0,0]}],"start":[0,0,3],"gem":[4,0,4],"min":28,"sol":"THTLTRThTLTHTLTLLHTLLTRRRRTR"},{"ch":"Важкі","title":"Довга дорога","hint":"Тридцять ходів і більше. Спершу план, потім ноги.","X":7,"Y":3,"W":3,"h":[["1111101","1111101","1111101"],["1122101","1112101","1111101"],["1111201","1111221","2111221"]],"bodies":[{"shape":"beamw","at":[2,1,0]}],"start":[0,1,0],"gem":[6,1,2],"min":31,"sol":"RURRDLTRTHDRUTLLURRDRRTRUHLLDTL"},{"ch":"Важкі","title":"Плаский фінал","hint":"Найдовша кімната плаского героя.","flat":true,"X":6,"Y":1,"W":5,"h":[["111112"],["100001"],["110001"],["110021"],["110101"]],"bodies":[{"shape":"beamx","at":[2,0,0]}],"start":[0,0,1],"gem":[5,0,4],"min":35,"sol":"TLTLHTLTRRRTHTRTHTLTHLTRTRTRRRRRTRR"}];
+</script>
+<script>
+const M=window.Mantle,$=id=>document.getElementById(id);
+const PAL=[[.80,.46,.27],[.16,.62,.58],[.58,.47,.88],[.86,.70,.30],[.80,.38,.52],[.40,.62,.90]];
+let showSheet=false,li=0,L,S,hist,anim=null,done=new Set(),dirty=true,whyT=0,queue=[],outside=false,outM=0,bumps=0;
+// ---------- GL
+const cv=$('gl'),gl=cv.getContext('webgl2',{antialias:false});
+const VS=`#version 300 es
+in vec2 a;void main(){gl_Position=vec4(a,0,1);}`;
+const FS=`#version 300 es
+precision highp float;precision highp int;
+uniform vec2 uR,uE;uniform vec3 uPl,uDim,uGem,uCam,uGemW;uniform float uUp,uTint,uPz;uniform vec4 uSheet;uniform vec2 uSE,uCA;uniform float uSlab;
+uniform sampler2D uH;
+uniform int uNb,uNf,uNc,uNm;uniform vec4 uB[32],uBc[32];uniform vec4 uF[24];uniform vec4 uFc[24];uniform float uFw[24];
+uniform vec4 uCd[4];uniform vec3 uCr;uniform vec4 uMk[16];uniform vec3 uMc[16];
+out vec4 O;
+// gPl: the point the drawn slice passes through; gCard: 0 = your own slice, 1..4 = a glass card with a neighbouring slice
+vec3 gPl;int gCard;
+float hgt(ivec3 c){return texelFetch(uH,ivec2(c.x+c.z*int(uDim.x),c.y),0).r*255.;}
+float hAt(vec2 xw,float y){ivec3 c=ivec3(floor(vec3(xw.x,y,xw.y)));if(c.x<0||c.y<0||c.z<0||c.x>=int(uDim.x)||c.y>=int(uDim.y)||c.z>=int(uDim.z))return -1.;return hgt(c);}
+vec2 XW(float u){return gPl.xz+(u-uUp)*uE;}
+// stone heightfield, walked column by column in (x,y,w)
+float field(vec3 ro,vec3 rd,out vec3 n,out float hh){
+ vec2 q=XW(ro.x);vec3 o=vec3(q.x,ro.y,q.y),d=vec3(rd.x*uE.x,rd.y,rd.x*uE.y);
+ vec3 ds=mix(d,vec3(1e-6),lessThan(abs(d),vec3(1e-6)));vec3 inv=1./ds;
+ vec3 t1=(vec3(0)-o)*inv,t2=(uDim-o)*inv,tn=min(t1,t2),tf=max(t1,t2);
+ float zt1=(3.-ro.z)/rd.z,zt2=(-7.-ro.z)/rd.z;float zn=min(zt1,zt2),zf=max(zt1,zt2);
+ float ta=max(max(tn.x,tn.y),max(tn.z,zn)),tb=min(min(tf.x,tf.y),min(tf.z,zf));
+ if(ta>tb||tb<0.)return -1.;
+ int ax=3;if(ta==tn.x)ax=0;else if(ta==tn.y)ax=1;else if(ta==tn.z)ax=2;
+ float t=max(ta,0.)+1e-4;if(ta<0.)ax=4;
+ vec3 p=o+ds*t;ivec3 c=ivec3(clamp(floor(p),vec3(0),uDim-1.));ivec3 st=ivec3(sign(ds));
+ vec3 td=abs(inv),tm=(vec3(c)+max(vec3(st),0.)-o)*inv;
+ for(int i=0;i<40;i++){
+  float h=hgt(c),zin=ro.z+rd.z*t;
+  if(h>0.&&zin<=h+1e-4){hh=h;if(ax==4)n=-rd;else if(ax==3)n=vec3(0,0,1);else if(ax==1)n=vec3(0,-float(st.y),0);else n=vec3(-sign(rd.x),0,0);return t;}
+  float tx=min(tm.x,min(tm.y,tm.z));
+  if(rd.z<0.&&h>0.){float tt=(h-ro.z)/rd.z;if(tt>t&&tt<=tx){hh=h;n=vec3(0,0,1);return tt;}}
+  if(tx>tb)break;
+  if(tm.x<=tm.y&&tm.x<=tm.z){c.x+=st.x;tm.x+=td.x;ax=0;}else if(tm.y<=tm.z){c.y+=st.y;tm.y+=td.y;ax=1;}else{c.z+=st.z;tm.z+=td.z;ax=2;}
+  t=tx;if(c.x<0||c.y<0||c.z<0||c.x>=int(uDim.x)||c.y>=int(uDim.y)||c.z>=int(uDim.z))break;}
+ return -1.;}
+float box4(vec4 o,vec4 d,vec4 c,vec4 hs,out vec3 n){
+ vec4 ds=mix(d,vec4(1e-6),lessThan(abs(d),vec4(1e-6)));vec4 inv=1./ds,t1=(c-hs-o)*inv,t2=(c+hs-o)*inv,tn=min(t1,t2),tf=max(t1,t2);
+ float a=max(max(tn.x,tn.y),max(tn.z,tn.w)),b=min(min(tf.x,tf.y),min(tf.z,tf.w));if(a>b||b<0.)return -1.;if(a<0.){n=-d.xyz/length(d.xyz);return 1e-4;}
+ if(a==tn.z)n=vec3(0,0,-sign(d.z));else if(a==tn.y)n=vec3(0,-sign(d.y),0);else n=vec3(-sign(d.x+d.w),0,0);return a;}
+float box3(vec3 o,vec3 d,vec3 c,vec3 hs,out vec3 n){
+ vec3 ds=mix(d,vec3(1e-6),lessThan(abs(d),vec3(1e-6)));vec3 inv=1./ds,t1=(c-hs-o)*inv,t2=(c+hs-o)*inv,tn=min(t1,t2),tf=max(t1,t2);
+ float a=max(tn.x,max(tn.y,tn.z)),b=min(tf.x,min(tf.y,tf.z));if(a>b||a<0.)return -1.;
+ if(a==tn.z)n=vec3(0,0,-sign(d.z));else if(a==tn.y)n=vec3(0,-sign(d.y),0);else n=vec3(-sign(d.x),0,0);return a;}
+float sph(vec3 ro,vec3 rd,vec3 c,float r){vec3 oc=ro-c;float b=dot(oc,rd),k=b*b-dot(oc,oc)+r*r;if(k<0.)return -1.;float t=-b-sqrt(k);return t>0.?t:-1.;}
+// returns t; m: 1 stone, 2 piece, 3 player, 4 crystal
+float scene(vec3 ro,vec3 rd,out vec3 n,out float m,out vec4 info,bool shadow){
+ float best=1e9;m=0.;vec3 nn;float hh;
+ float t=field(ro,rd,nn,hh);if(t>0.){best=t;n=nn;m=1.;info=vec4(hh,0,0,0);}
+ vec2 q=XW(ro.x);vec4 o4=vec4(q.x,ro.y,ro.z,q.y),d4=vec4(rd.x*uE.x,rd.y,rd.z,rd.x*uE.y);
+ for(int i=0;i<32;i++){if(i>=uNb)break;t=box4(o4,d4,uB[i],vec4(.46,.46,.5,.46),nn);if(t>0.&&t<best){best=t;n=nn;m=2.;info=uBc[i];}}
+ for(int i=0;i<24;i++){if(i>=uNf)break;if(int(uF[i].w+.5)!=gCard)continue;t=box3(ro,rd,vec3(uUp+uF[i].x,uF[i].y,uF[i].z),vec3(uFw[i],.46,.5),nn);if(t>0.&&t<best){best=t;n=nn;m=2.;info=uFc[i];}}
+ if(gCard==0){vec3 pc=vec3(uUp,uPl.y,uPz);t=sph(ro,rd,pc,.3);if(t>0.&&t<best){best=t;n=normalize(ro+rd*t-pc);m=3.;}}
+ vec3 gc;float gs;
+ if(gCard==0){gc=vec3(uGem.xy,1.45);gs=uGem.z;}
+ else{vec2 dd=uGemW.xz-gPl.xz;gc=vec3(uUp+dot(dd,uE),uGemW.y,1.45);float off=abs(dot(dd,vec2(-uE.y,uE.x)));gs=max(0.,1.-off*off);}
+ if(!shadow&&gs>.02){t=sph(ro,rd,gc,.27*gs);if(t>0.&&t<best){best=t;n=normalize(ro+rd*t-gc);m=4.;}}
+ return best<1e8?best:-1.;}
+vec3 sky(float v){return mix(vec3(.055,.065,.10),vec3(.13,.15,.22),v);}
+vec3 shade(vec3 ro,vec3 rd,float t,vec3 n,float m,vec4 info){
+ vec3 p=ro+rd*t,Ld=normalize(vec3(-.42,-.36,.84));vec3 alb;float em=0.;
+ if(m==1.){float h=info.x;alb=h>1.5?vec3(.36,.38,.46):vec3(.86,.83,.77);
+  if(n.z>.5){vec2 xw=XW(p.x);vec2 g=abs(fract(vec2(xw.x*uE.x+xw.y*uE.y,p.y))-.5);float line=smoothstep(.46,.5,max(g.x,g.y));alb*=1.-.13*line;
+   if(h<1.5){vec2 hn=vec2(-uE.y,uE.x);float a=hAt(xw+hn,p.y),b=hAt(xw-hn,p.y);
+    alb=mix(alb,vec3(1.,.62,.36),uTint*.42*step(1.5,a));alb=mix(alb,vec3(.42,.66,1.),uTint*.42*step(1.5,b));
+    alb*=1.-uTint*.10*(step(a,.5)*step(-.5,a)+step(b,.5)*step(-.5,b));}}
+  else{alb*=.86;if(p.z<1.)alb*=mix(.35,1.,exp(.5*min(p.z-0.,0.)))*(p.z<0.?.6:.92);}}
+ else if(m==2.){alb=info.rgb;float fl=info.a;
+  if(n.z>.5){vec2 g=abs(fract(vec2(p.x-uUp,p.y)+.5)-.5);float d=max(g.x,g.y);alb*=1.-.25*smoothstep(.40,.46,d);
+   float dd=abs(g.x)+abs(g.y);
+   if(fl>.5){float mk=1.-smoothstep(.16,.19,dd);vec3 mc=fl<1.5?vec3(1.,.72,.40):fl<2.5?vec3(.50,.74,1.):vec3(1.);alb=mix(alb,mc,mk);}}
+  if(p.z<1.01&&n.z>.5)alb=mix(alb,vec3(.86,.83,.77),.45);}
+ else if(m==3.){alb=vec3(1.);em=.35;}
+ else{alb=vec3(1.,.78,.36);em=.9;}
+ vec3 n2;float m2;vec4 i2;float sh=scene(p+n*.002+Ld*.002,Ld,n2,m2,i2,true)>0.?.42:1.;
+ float dif=max(dot(n,Ld),0.)*sh;float amb=.42+.16*n.z+.30*max(dot(n,-rd),0.)*(1.-uCA.y);
+ vec3 col=alb*(dif*vec3(1.,.95,.86)*.92+amb*vec3(.72,.78,.95));
+ col=mix(col,alb,em);
+ if(p.z<0.)col=mix(col,sky(.0),clamp(-p.z*.28,0.,1.));
+ return col;}
+// ghost cells: where a held piece would land (blue = turn left, pink = turn right, red = refused)
+vec3 ghost(vec3 ro,vec3 rd,float t,vec3 col){
+ vec2 q=XW(ro.x);vec4 o4=vec4(q.x,ro.y,ro.z,q.y),d4=vec4(rd.x*uE.x,rd.y,rd.z,rd.x*uE.y);vec3 nn;
+ vec4 hs=vec4(.44,.44,.47,.44);
+ for(int i=0;i<16;i++){if(i>=uNm)break;float tm=box4(o4,d4,uMk[i],hs,nn);if(tm>0.&&(t<0.||tm<t+1e-3)){
+   vec4 l=abs(o4+d4*tm-uMk[i])/hs;float near=step(.86,l.x)+step(.86,l.y)+step(.86,l.z);
+   col=mix(col,uMc[i]*.85,.62);if(near>=2.)col=mix(col,uMc[i]*1.25+.15,.85);}}
+ return col;}
+void main(){
+ vec2 uv=(gl_FragCoord.xy-.5*uR)/uR.y;
+ float yaw=uCA.x,pit=uCA.y;vec3 f=vec3(sin(yaw)*cos(pit),cos(yaw)*cos(pit),-sin(pit)),r=normalize(cross(f,vec3(0,0,1))),u=cross(r,f);
+ vec3 ro=vec3(uCam.xy,1.)+(uv.x*r+uv.y*u)*uCam.z*2.-f*40.,rd=f;
+ float tc=1e9;bool dead=false;
+ if(uSlab<20.){vec3 pn=vec3(-uSE.y,uSE.x,0.);float dn=dot(rd,pn),od=dot(ro-vec3(uSheet.yz,0.),pn);
+  if(abs(dn)<1e-5)dead=abs(od)>uSlab;else{float a=(-uSlab-od)/dn,b=(uSlab-od)/dn;float t0=max(min(a,b),0.);tc=max(a,b)-t0;ro+=rd*t0;}}
+ gPl=uPl;gCard=0;
+ vec3 n;float m;vec4 info;float t=dead?-1.:scene(ro,rd,n,m,info,false);if(t>tc)t=-1.;
+ vec3 bg=sky(gl_FragCoord.y/uR.y),col=bg;
+ if(t>0.)col=shade(ro,rd,t,n,m,info);
+ col=ghost(ro,rd,t,col);
+ // glass cards: the neighbouring slices, drawn smaller in front of and behind your own
+ vec2 nv=vec2(-uE.y,uE.x);float tm=t>0.?t:1e9;
+ for(int j=0;j<4;j++){if(j>=uNc)break;vec4 cd=uCd[j];float s=cd.z;vec3 O3=vec3(cd.xy,0.),rc=(ro-O3)/s;
+  gPl=vec3(uPl.x+cd.w*nv.x,uPl.y,uPl.z+cd.w*nv.y);gCard=j+1;
+  vec3 pc=vec3(.5*(uCr.x+uCr.y),.5*uCr.z,-.10),ph=vec3(.5*(uCr.y-uCr.x)+.16,.5*uCr.z+.16,.10),pn;
+  float tp=box3(rc,rd,pc,ph,pn);
+  vec3 n2;float m2;vec4 i2;float tcd=scene(rc,rd,n2,m2,i2,false);
+  if(tcd>0.&&tcd*s<tm){vec3 cc=shade(rc,rd,tcd,n2,m2,i2);cc=ghost(rc,rd,tcd,cc);col=mix(bg+vec3(.02,.04,.07),cc,.74);tm=tcd*s;}
+  else if(tp>0.&&tp*s<tm)col=ghost(rc,rd,-1.,col);
+  if(tp>0.&&tp*s<=tm+1e-3){vec3 q=rc+rd*tp-pc;float e=min(ph.x-abs(q.x),ph.y-abs(q.y));
+   col=mix(col,vec3(.55,.76,1.),.14)+vec3(.45,.65,1.)*.30*smoothstep(.07,.0,e);}}
+ if(uGem.z<=.99){vec3 gc=vec3(uGem.xy,1.45);vec3 w=gc-ro;float dd=length(w-rd*dot(w,rd));col+=vec3(1.,.74,.34)*exp(-dd*4.5)*(.16+.5*uGem.z);}
+ else{vec3 gc=vec3(uGem.xy,1.45);vec3 w=gc-ro;float dd=length(w-rd*dot(w,rd));col+=vec3(1.,.74,.34)*exp(-dd*5.)*.35;}
+ if(uSheet.x>.5){vec3 pn=vec3(-uSE.y,uSE.x,0.),pc=vec3(uSheet.yz,0.);float tp=dot(pc-ro,pn)/dot(rd,pn);vec3 q=ro+rd*tp;
+  bool inb=q.x>-.04&&q.x<uDim.x+.04&&q.y>-.04&&q.y<uDim.y+.04&&q.z>.0&&q.z<2.5;
+  if(t>0.){vec3 p=ro+rd*t;float dist=abs(dot(p-pc,pn));col=mix(col,col*vec3(1.22,1.12,.82)+vec3(.05,.035,0.),smoothstep(.5,.44,dist)*.9*uSheet.w);}
+  if(uSheet.w>.01&&inb&&(t<0.||tp<t)){float e=min(min(q.z,2.5-q.z),min(min(q.x,uDim.x-q.x)+step(.5,abs(uSE.y))*9.,min(q.y,uDim.y-q.y)+step(.5,abs(uSE.x))*9.));
+   col=mix(col,vec3(.62,.84,1.),uSheet.w*(.15+.45*smoothstep(.06,.0,e)));}}
+ col=pow(col,vec3(.4545));
+ O=vec4(col,1);}`;
+function sh(t,s){const o=gl.createShader(t);gl.shaderSource(o,s);gl.compileShader(o);if(!gl.getShaderParameter(o,gl.COMPILE_STATUS))throw new Error(gl.getShaderInfoLog(o));return o}
+const pr=gl.createProgram();gl.attachShader(pr,sh(gl.VERTEX_SHADER,VS));gl.attachShader(pr,sh(gl.FRAGMENT_SHADER,FS));gl.linkProgram(pr);
+if(!gl.getProgramParameter(pr,gl.LINK_STATUS))throw new Error(gl.getProgramInfoLog(pr));gl.useProgram(pr);
+gl.bindBuffer(gl.ARRAY_BUFFER,gl.createBuffer());gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,3,-1,-1,3]),gl.STATIC_DRAW);
+const al=gl.getAttribLocation(pr,'a');gl.enableVertexAttribArray(al);gl.vertexAttribPointer(al,2,gl.FLOAT,false,0,0);
+const U={};const un=n=>U[n]||(U[n]=gl.getUniformLocation(pr,n));
+const tex=gl.createTexture();gl.bindTexture(gl.TEXTURE_2D,tex);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.NEAREST);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.NEAREST);gl.pixelStorei(gl.UNPACK_ALIGNMENT,1);
+function size(){const r=cv.getBoundingClientRect(),dp=Math.min(2,devicePixelRatio||1);cv.width=Math.max(2,Math.round(r.width*dp));cv.height=Math.max(2,Math.round(r.height*dp));gl.viewport(0,0,cv.width,cv.height);dirty=true}
+addEventListener('resize',size);
+
+// ---------- game flow
+function upload(){const hof=(x,y,w)=>{let h=0;for(let z=0;z<3;z++)if(L.stone[L.idx(x,y,z,w)])h=z+1;return Math.min(h,2)};
+ if(LEVELS[li].flat){const d=new Uint8Array(L.X*L.W);for(let w=0;w<L.W;w++)for(let x=0;x<L.X;x++)d[w*L.X+x]=hof(x,0,w);gl.texImage2D(gl.TEXTURE_2D,0,gl.R8,L.X,L.W,0,gl.RED,gl.UNSIGNED_BYTE,d)}
+ else{const d=new Uint8Array(L.X*L.W*L.Y);for(let w=0;w<L.W;w++)for(let y=0;y<L.Y;y++)for(let x=0;x<L.X;x++)d[y*L.X*L.W+x+w*L.X]=hof(x,y,w);gl.texImage2D(gl.TEXTURE_2D,0,gl.R8,L.X*L.W,L.Y,0,gl.RED,gl.UNSIGNED_BYTE,d)}
+ outLabel();dirty=true}
+const outLabel=()=>{$('bo').textContent=outside?'Очима героя (C)':'Ззовні (C)'};
+function toggleOut(){if(!LEVELS[li].flat||anim)return;outside=!outside;outLabel();clearHint();dirty=true}
+const store={get(k){try{return JSON.parse(localStorage.getItem('mantle.'+k))}catch(e){return null}},set(k,v){try{localStorage.setItem('mantle.'+k,JSON.stringify(v))}catch(e){}}};
+for(const k of store.get('done')||[])done.add(k);
+let hints=0,hintA=null,hintS=null;
+// flat rooms start from outside, except the very first one: there the hero bumps into the wall and the camera pulls out by itself
+function start(i){li=i;bumps=0;hints=0;L=M.load(LEVELS[i]);S=L.init;hist=[];anim=null;queue=[];clearHint();
+ outside=!!LEVELS[i].flat&&!LEVELS[i].hint2;outM=outside?1:0;upload();$('bo').style.display=LEVELS[i].flat?'':'none';
+ $('ht').textContent=(i+1)+'. '+LEVELS[i].title;$('chn').textContent=LEVELS[i].ch?'· '+LEVELS[i].ch:'';$('hb').innerHTML=LEVELS[i].hint;$('hw').textContent='';$('win').style.display='none';
+ const lv=$('lv');lv.innerHTML='';let chp=null;LEVELS.forEach((l,k)=>{if(l.ch!==chp){chp=l.ch;const t=document.createElement('span');t.className='chl';t.textContent=chp;lv.appendChild(t)}
+  const b=document.createElement('button');b.textContent=k+1;b.title=l.title;if(k===li)b.className='on';else if(done.has(k))b.className='done';b.onclick=()=>{start(k);b.blur()};lv.appendChild(b)});
+ store.set('at',i);size();dirty=true}
+const WHY={edge:'Далі краю немає.',wall:'Стіна.',pit:'Попереду яма.',stuck:'Шматок не зрушити: йому щось заважає. Подивись на сусідні зрізи.','nothing to hold':'Поруч зліва чи справа немає шматка, якого можна взяти.','no room to turn it':'Шматку немає куди повернутись: місце зайняте або там край.',loaded:'На шматку щось лежить.'};
+function act(a){if($('win').style.display==='flex'||$('intro').style.display!=='none')return;if(anim){if(queue.length<2)queue.push(a);return}
+ const info={},n=M.step(L,S,a,info);
+ if(!n){$('hw').textContent=WHY[info.why]||'';whyT=2.2;dirty=true;
+  if(info.why==='wall'&&LEVELS[li].hint2&&!outside&&++bumps>=1){toggleOut();$('hb').innerHTML=LEVELS[li].hint2}return}
+ $('hw').textContent='';hist.push(S);clearHint();
+ const turn='TtHh'.includes(a),hold=a==='H'||a==='h';anim={from:S,to:n,t:0,dur:hold?1.1:turn?.52:.13,turn,hold,dth:turn?(a==='T'||a==='H'?1:-1)*Math.PI/2:0,held:info.heldIds||null};
+ S=n;dirty=true}
+function undo(){if(anim||!hist.length)return;S=hist.pop();clearHint();$('win').style.display='none';$('hw').textContent='';dirty=true}
+function finish(){done.add(li);store.set('done',[...done]);const last=li===LEVELS.length-1,moves=hist.length,best=LEVELS[li].min;
+ $('wh').textContent=last?'Усі кімнати пройдено':'Кристал твій';
+ $('wt').innerHTML=`Ходів: ${moves}. Найкоротше можливе: ${best}.`+(hints?` Підказок: ${hints}.`:'');
+ $('nx').textContent=last?'З початку':'Далі (Enter)';$('win').style.display='flex'}
+// the key a move is made with, as the player sees it right now
+function keyOf(a){if('LRUD'.includes(a)&&outside){const ux=[1,0,-1,0][S.v],uw=[0,1,0,-1][S.v],sg=a==='R'?1:a==='L'?-1:0,dx=sg*ux,dw=sg*uw;return dx>0?'→':dx<0?'←':dw>0?'↑':'↓'}
+ return {L:'←',R:'→',U:'↑',D:'↓',T:'Q',t:'E',H:'Shift+Q',h:'Shift+E'}[a]}
+const NAME={T:'повернись ⟲',t:'повернись ⟳',H:'повернись разом зі шматком ⟲',h:'повернись разом зі шматком ⟳'};
+const BTN={T:'bt',t:'bt2',H:'bh',h:'bh2'};
+function clearHint(){hintA=null;hintS=null;$('hintbox').style.display='none';document.querySelectorAll('.hint').forEach(b=>b.classList.remove('hint'))}
+// hint: the solver finds the shortest way from where you stand; the first press shows the next move, the second makes it
+function hint(){if(anim||$('win').style.display==='flex'||$('intro').style.display!=='none')return;
+ if(hintA&&hintS===S){const a=hintA;clearHint();if('LRUD'.includes(a)&&outside){press(keyOf(a))}else act(a);return}
+ const r=M.solve(Object.assign({},L,{init:S}),{max:400000});clearHint();
+ if(!r.ok){$('hintbox').innerHTML='Звідси кристала вже не дістати. Зроби крок назад (Z) або почни спочатку (R).';$('hintbox').style.display='block';return}
+ hintA=r.path[0];hintS=S;hints++;const k=keyOf(hintA);
+ $('hintbox').innerHTML=`Наступний крок: <b>${NAME[hintA]?NAME[hintA]+' ('+k+')':k}</b>. До кристала ще ${r.len}.<br><span style="opacity:.75;font-size:12px">Натисни H ще раз, щоб зробити цей крок.</span>`;$('hintbox').style.display='block';
+ const id=BTN[hintA];if(id)$(id).classList.add('hint');else{const pb=document.querySelector(`#pad [data-k="${{'→':'R','←':'L','↑':'U','↓':'D'}[k]}"]`);if(pb)pb.classList.add('hint')}}
+// arrows: in the outside view they mean directions in the world; a step along the hidden axis is refused
+function press(k){let a={'→':'R','←':'L','↑':'U','↓':'D'}[k];
+ if(outside){const w={R:[1,0],L:[-1,0],U:[0,1],D:[0,-1]}[a],ux=[1,0,-1,0][S.v],uw=[0,1,0,-1][S.v],d=w[0]*ux+w[1]*uw;a=d>0?'R':d<0?'L':'';
+  if(!a){$('hw').textContent='Герой може йти лише вздовж свого аркуша. Повернись (Q або E).';whyT=2.4;return}}
+ act(a)}
+const KM={ArrowUp:'↑',ArrowDown:'↓',ArrowLeft:'←',ArrowRight:'→',KeyW:'↑',KeyS:'↓',KeyA:'←',KeyD:'→',Space:'T',KeyQ:'T',KeyE:'t'};
+const toggleSheet=()=>{showSheet=!showSheet;dirty=true};
+function closeIntro(){$('intro').style.display='none';store.set('seen',1)}
+addEventListener('keydown',e=>{if($('intro').style.display!=='none'){if(e.code==='Enter'||e.code==='Space'){e.preventDefault();closeIntro()}return}
+ if(e.code==='Tab'){e.preventDefault();return toggleSheet()}if(e.code==='KeyR')return start(li);if(e.code==='KeyZ')return undo();if(e.code==='KeyH')return hint();
+ if(e.code==='Enter'&&$('win').style.display==='flex')return start((li+1)%LEVELS.length);
+ if(e.code==='KeyC')return toggleOut();
+ let a=KM[e.code];if(!a)return;e.preventDefault();
+ if(a==='T'||a==='t'){if(e.shiftKey)a=a==='T'?'H':'h';if(e.repeat)return;return act(a)}
+ press(a)});
+const tap=(id,fn)=>$(id).onclick=e=>{fn();e.currentTarget.blur()};
+tap('bt',()=>act('T'));tap('bt2',()=>act('t'));tap('bh',()=>act('H'));tap('bh2',()=>act('h'));tap('bo',toggleOut);tap('bs',toggleSheet);tap('bhint',hint);tap('bz',undo);tap('br',()=>start(li));
+document.querySelectorAll('#pad button').forEach(b=>b.onclick=e=>{press(b.textContent);b.blur()});
+$('nx').onclick=()=>start((li+1)%LEVELS.length);$('go').onclick=closeIntro;if(store.get('seen'))$('intro').style.display='none';
+
+// ---------- drawing
+const ease=k=>k*k*(3-2*k);
+const UX=[1,0,-1,0],UW=[0,1,0,-1];
+// A hold-turn plays in two phases. Phase a: the world and your view stand still and only the held piece turns
+// around you in the x–w plane, so in your slice it shrinks to its cross-section (and grows in the neighbouring cards).
+// Phase b: your view turns after it, and the piece grows back into the slice on screen.
+const PA=.5;
+function phases(a){if(!a)return {k:1,ka:1,kb:1};const k=ease(Math.min(1,a.t/a.dur));if(!a.hold)return {k,ka:k,kb:k};
+ return {k,ka:ease(Math.min(1,a.t/PA)),kb:ease(Math.max(0,Math.min(1,(a.t-PA)/(a.dur-PA))))}}
+// exact cross-section of one cell (a square of half size h in x–w, centred at c relative to the pivot, turned by phi)
+// with the line p = t·e + dh·n; returns [t0,t1] along e, or null
+function chord(cx,cw,phi,e,n,dh,h){const co=Math.cos(-phi),si=Math.sin(-phi),rot=v=>[v[0]*co-v[1]*si,v[0]*si+v[1]*co];
+ const A=rot(e),B=rot([dh*n[0],dh*n[1]]),C=[cx,cw];let t0=-1e9,t1=1e9;
+ for(const k of [0,1]){const off=B[k]-C[k];if(Math.abs(A[k])<1e-6){if(Math.abs(off)>h)return null;continue}
+  let lo=(-h-off)/A[k],hi=(h-off)/A[k];if(lo>hi)[lo,hi]=[hi,lo];t0=Math.max(t0,lo);t1=Math.min(t1,hi)}
+ return t1>t0+.03?[t0,t1]:null}
+const minZ=cells=>Math.min(...cells.map(c=>L.dec(c)[2]));
+// where a held piece would land for each hold-turn
+function preview(){const out=[];if(anim)return out;
+ for(const [act,col,nm] of [['H',[.37,.77,1],'ліворуч'],['h',[1,.48,.82],'праворуч']]){const info={},n=M.step(L,S,act,info);if(!info.land)continue;
+  out.push({act,ok:!!n,col:n?col:[1,.29,.24],nm,cells:info.land.filter(c=>c[0]>=0&&c[2]>=0&&c[0]<L.X&&c[2]<L.W)})}
+ return out}
+function setMarks(pv,flat){const mk=[],mc=[];for(const p of pv)if(p.ok)for(const c of p.cells){if(mk.length>=64)break;
+  if(flat)mk.push(c[0]+.5,c[2]+.5,1.5,.5);else mk.push(c[0]+.5,c[1]+.5,1.5,c[2]+.5);mc.push(...p.col)}
+ const nm=mk.length/4;gl.uniform1i(un('uNm'),nm);if(nm){gl.uniform4fv(un('uMk'),new Float32Array(mk));gl.uniform3fv(un('uMc'),new Float32Array(mc))}}
+function drawFlat(){
+ const a=anim,{k,ka,kb}=phases(a),A=a?a.from:S,B=S,m=ease(outM);
+ let th=B.v*Math.PI/2;if(a&&a.turn)th=A.v*Math.PI/2+a.dth*(a.hold?kb:k);
+ const c=Math.cos(th),sn=Math.sin(th),px=A.p[0]+(B.p[0]-A.p[0])*k+.5,pw=A.p[2]+(B.p[2]-A.p[2])*k+.5,asp=cv.width/cv.height;
+ const Ulen=L.X*c*c+L.W*sn*sn,scIn=Math.max((Ulen/2+.7)/asp,2.3);
+ const hw=(L.X*Math.cos(.30)+L.W*Math.sin(.30))/2+.6,hh=((L.X*Math.sin(.30)+L.W*Math.cos(.30))*Math.sin(.90)+2.2*Math.cos(.90))/2+.5,scOut=Math.max(hw/asp,hh);
+ const tx=(px*sn*sn+L.X/2*c*c)*(1-m)+L.X/2*m,ty=(pw*c*c+L.W/2*sn*sn)*(1-m)+(L.W/2+.1)*m;
+ gl.uniform2f(un('uR'),cv.width,cv.height);gl.uniform2f(un('uE'),1,0);gl.uniform3f(un('uPl'),px,pw,.5);gl.uniform1f(un('uUp'),px);gl.uniform1f(un('uPz'),1.34);
+ gl.uniform3f(un('uDim'),L.X,L.W,1);gl.uniform3f(un('uCam'),tx,ty,scIn+(scOut-scIn)*m);gl.uniform1f(un('uTint'),0);
+ gl.uniform2f(un('uCA'),-th*(1-m)+.30*m,.90*m);gl.uniform1f(un('uSlab'),m>=1?99:.5+m*m*14);
+ gl.uniform4f(un('uSheet'),1,px,pw,m);gl.uniform2f(un('uSE'),c,sn);gl.uniform1i(un('uNc'),0);gl.uniform1i(un('uNf'),0);
+ const b4=[],bc=[];
+ B.bs.forEach((cells,i)=>{const col=PAL[i%PAL.length],from=a?A.bs[i]:cells,held=a&&a.hold&&a.held&&a.held.includes(i),dz=held?minZ(cells)-minZ(A.bs[i]):0;
+  cells.forEach((cell,j)=>{const q=L.dec(cell);let x=q[0]+.5,w=q[3]+.5,z=q[2]+.5;
+   if(held){const ang=a.dth*ka,ax=A.p[0]+.5,aw=A.p[2]+.5,o=L.dec(A.bs[i][j]),dx=o[0]+.5-ax,dw=o[3]+.5-aw;
+     x=ax+dx*Math.cos(ang)-dw*Math.sin(ang);w=aw+dx*Math.sin(ang)+dw*Math.cos(ang);z=o[2]+.5+dz*kb}
+   else if(a&&!a.turn&&from[j]!==undefined){const r=L.dec(from[j]);x=r[0]+(q[0]-r[0])*k+.5;w=r[3]+(q[3]-r[3])*k+.5;z=r[2]+(q[2]-r[2])*k+.5}
+   b4.push(x,w,z,.5);bc.push(col[0],col[1],col[2],0)})});
+ const nb=Math.min(32,b4.length/4);gl.uniform1i(un('uNb'),nb);if(nb){gl.uniform4fv(un('uB'),new Float32Array(b4.slice(0,nb*4)));gl.uniform4fv(un('uBc'),new Float32Array(bc.slice(0,nb*4)))}
+ gl.uniform3f(un('uGem'),L.gem[0]+.5,L.gem[2]+.5,1);
+ const pv=preview();setMarks(pv,true);
+ gl.drawArrays(gl.TRIANGLES,0,3);$('cl').innerHTML='';
+ $('axis').innerHTML=a&&a.hold&&a.t<PA?'Аркуш стоїть: шматок повертається навколо героя':outside?'Ти дивишся ззовні. Герой живе в скляному аркуші.':(B.v%2?'Очима героя. Перед ним вісь <b>W</b>, схована X':'Очима героя. Перед ним вісь <b>X</b>, схована W')+(B.v>=2?' · <b>світ віддзеркалено</b>':'');sheet(pv)}
+const CS=.46,CG=.8,GB=1.5,NS=2; // card scale, gap between cards, cards on each side
+function draw(){
+ if(LEVELS[li].flat)return drawFlat();
+ gl.uniform4f(un('uSheet'),0,0,0,0);gl.uniform2f(un('uCA'),.30,.90);gl.uniform1f(un('uSlab'),99);
+ const a=anim,{k,ka,kb}=phases(a),A=a?a.from:S,B=S;
+ let th=B.v*Math.PI/2;if(a&&a.turn)th=A.v*Math.PI/2+a.dth*(a.hold?kb:k);
+ const c=Math.cos(th),s=Math.sin(th);
+ const px=A.p[0]+(B.p[0]-A.p[0])*k+.5,py=A.p[1]+(B.p[1]-A.p[1])*k+.5,pw=A.p[2]+(B.p[2]-A.p[2])*k+.5,up=px*c*c+pw*s*s;
+ const Ulen=L.X*c*c+L.W*s*s,cu=up+(L.X/2-px)*c+(L.W/2-pw)*s,asp=cv.width/cv.height;
+ // the u range your slice covers (same for every parallel card)
+ let u0=1e9,u1=-1e9;for(const [x,w] of [[0,0],[L.X,0],[0,L.W],[L.X,L.W]]){const d=(x-px)*c+(w-pw)*s;u0=Math.min(u0,up+d);u1=Math.max(u1,up+d)}
+ const Yc=CS*L.Y,yMin=-NS*(CG+Yc),yMax=L.Y+GB+(NS-1)*(Yc+CG)+Yc,depth=yMax-yMin,cy=(yMin+yMax)/2;
+ const hw=(Ulen*Math.cos(.30)+depth*Math.sin(.30))/2+.6,hh=((Ulen*Math.sin(.30)+depth*Math.cos(.30))*Math.sin(.90)+2.2*Math.cos(.90))/2+.5;
+ const sc=Math.max(hw/asp,hh);
+ gl.uniform2f(un('uR'),cv.width,cv.height);gl.uniform2f(un('uE'),c,s);gl.uniform3f(un('uPl'),px,py,pw);gl.uniform1f(un('uUp'),up);gl.uniform1f(un('uPz'),1.34);
+ gl.uniform3f(un('uDim'),L.X,L.Y,L.W);gl.uniform3f(un('uCam'),cu,cy+.1,sc);gl.uniform1f(un('uTint'),Math.abs(Math.cos(2*th)));
+ gl.uniform3f(un('uCr'),u0,u1,L.Y);gl.uniform3f(un('uGemW'),L.gem[0]+.5,L.gem[1]+.5,L.gem[2]+.5);
+ // which neighbouring slices get a card: hidden coordinate = ph + dh·sg
+ const R=a&&(a.hold?ka<1:k<.5)?A:B,xv=R.v%2===0,Hn=xv?L.W:L.X,ph=xv?R.p[2]:R.p[0],sg=R.v===0||R.v===3?1:-1,hx=xv?'W':'X';
+ const cards=[];for(const dh of [-2,-1,1,2]){const h=ph+dh*sg;if(h<0||h>=Hn)continue;
+  const Oy=dh>0?L.Y+GB+(dh-1)*(Yc+CG):dh*(CG+Yc);cards.push({dh,h,O:[cu*(1-CS),Oy]})}
+ const cd=[];cards.forEach(q=>cd.push(q.O[0],q.O[1],CS,q.dh));gl.uniform1i(un('uNc'),cards.length);if(cards.length)gl.uniform4fv(un('uCd'),new Float32Array(cd));
+ // pieces: 4D boxes; a held piece in phase a is drawn as its exact cross-section with each slice
+ const b4=[],bc=[],f3=[],fc=[],fw=[];
+ const flag=(cells,cell,v)=>{const q=L.dec(cell);for(const o of cells){if(o===cell)continue;const r=L.dec(o);if(r[1]===q[1]&&r[2]===q[2]&&(r[0]-q[0])*UX[v]+(r[3]-q[3])*UW[v]===0)return 3}return 0};
+ const e=[UX[A.v],UW[A.v]],nn=[-UW[A.v],UX[A.v]],phi=a&&a.hold?a.dth*ka:0;
+ B.bs.forEach((cells,i)=>{const col=PAL[i%PAL.length],held=a&&a.hold&&a.held&&a.held.includes(i);
+  if(held&&a.t<PA){for(const cell of A.bs[i]){const q=L.dec(cell),dx=q[0]-A.p[0],dw=q[3]-A.p[2];
+     for(const [ci,dh] of [[0,0],...cards.map((cq,j)=>[j+1,cq.dh])]){const ch=chord(dx,dw,phi,e,nn,dh,.46);if(!ch||f3.length>=96)continue;
+      f3.push((ch[0]+ch[1])/2,q[1]+.5,q[2]+.5,ci);fw.push((ch[1]-ch[0])/2);fc.push(col[0],col[1],col[2],0)}}return}
+  const dz=held?minZ(cells)-minZ(A.bs[i]):0,from=a&&!a.turn?A.bs[i]:cells;
+  cells.forEach((cell,j)=>{const q=L.dec(cell),r=L.dec(from[j]===undefined?cell:from[j]);
+   b4.push(r[0]+(q[0]-r[0])*k+.5,r[1]+(q[1]-r[1])*k+.5,r[2]+(q[2]-r[2])*k+.5-(held?dz*(1-kb):0),r[3]+(q[3]-r[3])*k+.5);bc.push(col[0],col[1],col[2],a&&a.turn?0:flag(cells,cell,B.v))})});
+ const nb=Math.min(32,b4.length/4);gl.uniform1i(un('uNb'),nb);if(nb){gl.uniform4fv(un('uB'),new Float32Array(b4.slice(0,nb*4)));gl.uniform4fv(un('uBc'),new Float32Array(bc.slice(0,nb*4)))}
+ const nf=Math.min(24,f3.length/4);gl.uniform1i(un('uNf'),nf);if(nf){gl.uniform4fv(un('uF'),new Float32Array(f3.slice(0,nf*4)));gl.uniform4fv(un('uFc'),new Float32Array(fc.slice(0,nf*4)));gl.uniform1fv(un('uFw'),new Float32Array(fw.slice(0,nf)))}
+ const gx=L.gem[0]+.5,gw=L.gem[2]+.5,gu=up+(gx-px)*c+(gw-pw)*s,off=Math.abs(-(gx-px)*s+(gw-pw)*c);
+ gl.uniform3f(un('uGem'),gu,L.gem[1]+.5,Math.max(0,1-off*off));
+ const pv=preview();setMarks(pv,false);
+ gl.drawArrays(gl.TRIANGLES,0,3);
+ // card labels, placed by projecting each card's left edge with the same camera as the shader
+ const yaw=.30,pit=.90,f=[Math.sin(yaw)*Math.cos(pit),Math.cos(yaw)*Math.cos(pit),-Math.sin(pit)],rr=[f[1],-f[0],0],rl=Math.hypot(rr[0],rr[1]);rr[0]/=rl;rr[1]/=rl;
+ const uu=[rr[1]*f[2]-rr[2]*f[1],rr[2]*f[0]-rr[0]*f[2],rr[0]*f[1]-rr[1]*f[0]],dp=cv.width/cv.getBoundingClientRect().width;
+ const proj=P=>{const d=[P[0]-cu,P[1]-(cy+.1),P[2]-1];const x=(d[0]*rr[0]+d[1]*rr[1]+d[2]*rr[2])/(2*sc),y=(d[0]*uu[0]+d[1]*uu[1]+d[2]*uu[2])/(2*sc);return [(x*cv.height+cv.width/2)/dp,(cv.height/2-y*cv.height)/dp]};
+ let lab='';const put=(P,t,cls)=>{let [X,Y]=proj(P);const need=t.length*6.6+6;if(X<need){cls=(cls||'')+' left';X=4}lab+=`<div class="cl ${cls||''}" style="left:${X.toFixed(0)}px;top:${Y.toFixed(0)}px">${t}</div>`};
+ for(const q of cards)put([q.O[0]+CS*u0-.15,q.O[1]+CS*L.Y/2,0],`${hx} ${q.h}`);
+ put([u0-.2,L.Y/2,0],`${hx} ${ph} · твій зріз`,'me');$('cl').innerHTML=lab;
+ $('axis').innerHTML=a&&a.hold&&a.t<PA?'Світ стоїть: шматок повертається навколо тебе':(B.v%2?'Перед тобою вісь <b>W</b>. Схована: X':'Перед тобою вісь <b>X</b>. Схована: W')+(B.v>=2?' · <b>світ віддзеркалено</b>':'');
+ sheet(pv)}
+// the flat contact sheet (hidden by default, Tab shows it): every slice along the hidden axis, top-down
+function sheet(pv){
+ let note='';for(const p of pv||[])note+=(note?' · ':'')+`поворот ${p.nm} зі шматком: `+(p.ok?`<span style="color:rgb(${p.col.map(x=>x*255|0)})">ляже, де світиться</span>`:'<span style="color:#ff6b5e">не вийде</span>');
+ $('sl').innerHTML=(LEVELS[li].flat?'':'Скляні картки: сусідні зрізи вздовж схованої осі. ')+(S.v>=2?'Ліво і право помінялись місцями. ':'')+note;
+ const cvs=$('sheet');if(!showSheet){cvs.style.display='none';return}cvs.style.display='block';
+ const v=S.v,xv=v%2===0,rev=v>=2,Un=xv?L.X:L.W,Hn=xv?L.W:L.X,cs=Math.max(8,Math.min(15,Math.floor((innerWidth-28-Hn*10)/(Hn*Un)))),gap=10,dpr=Math.min(2,devicePixelRatio||1);
+ const Wp=Hn*(Un*cs+gap),Hp=L.Y*cs+16;cvs.width=Wp*dpr;cvs.height=Hp*dpr;cvs.style.width=Wp+'px';cvs.style.height=Hp+'px';
+ const g=cvs.getContext('2d');g.scale(dpr,dpr);const o=M.occ(L,S),ph=xv?S.p[2]:S.p[0];
+ const rgb=(c,m)=>`rgb(${c.map(x=>Math.round(255*(m?x*.55+.3:x))).join(',')})`;
+ const XY=(x,y,w)=>{const u=xv?x:w,h=xv?w:x;return [h*(Un*cs+gap)+(rev?Un-1-u:u)*cs,(L.Y-1-y)*cs]};
+ for(let h=0;h<Hn;h++){const ox=h*(Un*cs+gap);
+  for(let y=0;y<L.Y;y++)for(let u=0;u<Un;u++){const x=xv?u:h,w=xv?h:u,[X0,Y0]=XY(x,y,w);
+   const wall=L.stone[L.idx(x,y,1,w)],fl=L.stone[L.idx(x,y,0,w)],b1=o.get(L.idx(x,y,1,w)),b0=o.get(L.idx(x,y,0,w));
+   g.fillStyle=wall?'#565a6b':b1!==undefined?rgb(PAL[b1%PAL.length]):b0!==undefined?rgb(PAL[b0%PAL.length],1):fl?'#d9d5cb':'#0b0c10';g.fillRect(X0,Y0,cs-1,cs-1);
+   if(x===L.gem[0]&&y===L.gem[1]&&w===L.gem[2]){g.fillStyle='#F2A93B';g.beginPath();g.moveTo(X0+cs/2-.5,Y0+1);g.lineTo(X0+cs-2,Y0+cs/2-.5);g.lineTo(X0+cs/2-.5,Y0+cs-2);g.lineTo(X0+1,Y0+cs/2-.5);g.fill()}
+   if(x===S.p[0]&&y===S.p[1]&&w===S.p[2]){g.fillStyle='#fff';g.strokeStyle='#111';g.lineWidth=1.5;g.beginPath();g.arc(X0+cs/2-.5,Y0+cs/2-.5,cs*.3,0,7);g.fill();g.stroke()}}
+  if(h===ph){g.strokeStyle='#F2C46B';g.lineWidth=2;g.strokeRect(ox-2,0,Un*cs+3,L.Y*cs+1)}
+  g.fillStyle=h===ph?'#F2C46B':'#A9A498';g.font='11px system-ui';g.textBaseline='top';g.fillText((xv?'W ':'X ')+h,ox,L.Y*cs+3)}
+ for(const p of pv||[]){g.strokeStyle=`rgb(${p.col.map(x=>x*255|0)})`;g.lineWidth=2;g.setLineDash(p.ok?[]:[3,2]);
+  for(const c of p.cells){const [X0,Y0]=XY(c[0],c[1],c[2]);g.strokeRect(X0+1.5,Y0+1.5,cs-4,cs-4)}g.setLineDash([])}}
+let last=performance.now();
+function loop(t){const dt=Math.min(.05,(t-last)/1000);last=t;
+ if(anim){anim.t+=dt;dirty=true;if(anim.t>=anim.dur){anim=null;if(M.won(L,S))finish();else if(queue.length){const q=queue.shift();draw();act(q)}}}
+ const tm=outside?1:0;if(outM!==tm){outM=Math.max(0,Math.min(1,outM+(tm>outM?1:-1)*dt/.9));dirty=true}
+ if(whyT>0){whyT-=dt;if(whyT<=0)$('hw').textContent=''}
+ if(dirty){dirty=false;draw()}
+ requestAnimationFrame(loop)}
+window.__m={get S(){return S},get L(){return L},act,start,hint,closeIntro,run:async s=>{for(const a of s){act(a);let n=0;while(anim&&n++<200)await new Promise(r=>setTimeout(r,20))}},get won(){return $('win').style.display==='flex'},levels:LEVELS};
+{const at=store.get('at');start(Number.isInteger(at)&&at<LEVELS.length?at:0)}requestAnimationFrame(loop);
+</script></body></html>

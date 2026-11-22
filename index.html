@@ -193,7 +193,7 @@ let showSheet=false,li=0,L,S,hist,anim=null,done=new Set(),dirty=true,whyT=0,que
 // ---------- GL
 const cv=$('gl');let gl=null,glWhy='';try{gl=cv.getContext('webgl2',{antialias:false,powerPreference:'high-performance'});if(!gl)glWhy='браузер не дав WebGL2'}catch(e){glWhy=e.message}
 const VS=`#version 300 es
-in vec2 a;void main(){gl_Position=vec4(a,0,1);}`;
+in vec2 a;void main(){gl_Position=vec4(a,0.,1.);}`;
 const FS=`#version 300 es
 precision highp float;precision highp int;
 uniform vec2 uR,uE;uniform vec3 uPl,uDim,uGem,uCam,uGemW;uniform float uUp,uTint,uPz;uniform vec4 uSheet;uniform vec2 uSE,uCA;uniform float uSlab;
@@ -210,19 +210,19 @@ vec2 XW(float u){return gPl.xz+(u-uUp)*uE;}
 float field(vec3 ro,vec3 rd,out vec3 n,out float hh){
  vec2 q=XW(ro.x);vec3 o=vec3(q.x,ro.y,q.y),d=vec3(rd.x*uE.x,rd.y,rd.x*uE.y);
  vec3 ds=mix(d,vec3(1e-6),lessThan(abs(d),vec3(1e-6)));vec3 inv=1./ds;
- vec3 t1=(vec3(0)-o)*inv,t2=(uDim-o)*inv,tn=min(t1,t2),tf=max(t1,t2);
+ vec3 t1=(vec3(0.)-o)*inv,t2=(uDim-o)*inv,tn=min(t1,t2),tf=max(t1,t2);
  float zt1=(3.-ro.z)/rd.z,zt2=(-7.-ro.z)/rd.z;float zn=min(zt1,zt2),zf=max(zt1,zt2);
  float ta=max(max(tn.x,tn.y),max(tn.z,zn)),tb=min(min(tf.x,tf.y),min(tf.z,zf));
  if(ta>tb||tb<0.)return -1.;
  int ax=3;if(ta==tn.x)ax=0;else if(ta==tn.y)ax=1;else if(ta==tn.z)ax=2;
  float t=max(ta,0.)+1e-4;if(ta<0.)ax=4;
- vec3 p=o+ds*t;ivec3 c=ivec3(clamp(floor(p),vec3(0),uDim-1.));ivec3 st=ivec3(sign(ds));
+ vec3 p=o+ds*t;ivec3 c=ivec3(clamp(floor(p),vec3(0.),uDim-1.));ivec3 st=ivec3(sign(ds));
  vec3 td=abs(inv),tm=(vec3(c)+max(vec3(st),0.)-o)*inv;
  for(int i=0;i<40;i++){
   float h=hgt(c),zin=ro.z+rd.z*t;
-  if(h>0.&&zin<=h+1e-4){hh=h;if(ax==4)n=-rd;else if(ax==3)n=vec3(0,0,1);else if(ax==1)n=vec3(0,-float(st.y),0);else n=vec3(-sign(rd.x),0,0);return t;}
+  if(h>0.&&zin<=h+1e-4){hh=h;if(ax==4)n=-rd;else if(ax==3)n=vec3(0.,0.,1.);else if(ax==1)n=vec3(0.,-float(st.y),0.);else n=vec3(-sign(rd.x),0.,0.);return t;}
   float tx=min(tm.x,min(tm.y,tm.z));
-  if(rd.z<0.&&h>0.){float tt=(h-ro.z)/rd.z;if(tt>t&&tt<=tx){hh=h;n=vec3(0,0,1);return tt;}}
+  if(rd.z<0.&&h>0.){float tt=(h-ro.z)/rd.z;if(tt>t&&tt<=tx){hh=h;n=vec3(0.,0.,1.);return tt;}}
   if(tx>tb)break;
   if(tm.x<=tm.y&&tm.x<=tm.z){c.x+=st.x;tm.x+=td.x;ax=0;}else if(tm.y<=tm.z){c.y+=st.y;tm.y+=td.y;ax=1;}else{c.z+=st.z;tm.z+=td.z;ax=2;}
   t=tx;if(c.x<0||c.y<0||c.z<0||c.x>=int(uDim.x)||c.y>=int(uDim.y)||c.z>=int(uDim.z))break;}
@@ -230,16 +230,16 @@ float field(vec3 ro,vec3 rd,out vec3 n,out float hh){
 float box4(vec4 o,vec4 d,vec4 c,vec4 hs,out vec3 n){
  vec4 ds=mix(d,vec4(1e-6),lessThan(abs(d),vec4(1e-6)));vec4 inv=1./ds,t1=(c-hs-o)*inv,t2=(c+hs-o)*inv,tn=min(t1,t2),tf=max(t1,t2);
  float a=max(max(tn.x,tn.y),max(tn.z,tn.w)),b=min(min(tf.x,tf.y),min(tf.z,tf.w));if(a>b||b<0.)return -1.;if(a<0.){n=-d.xyz/length(d.xyz);return 1e-4;}
- if(a==tn.z)n=vec3(0,0,-sign(d.z));else if(a==tn.y)n=vec3(0,-sign(d.y),0);else n=vec3(-sign(d.x+d.w),0,0);return a;}
+ if(a==tn.z)n=vec3(0.,0.,-sign(d.z));else if(a==tn.y)n=vec3(0.,-sign(d.y),0.);else n=vec3(-sign(d.x+d.w),0.,0.);return a;}
 float box3(vec3 o,vec3 d,vec3 c,vec3 hs,out vec3 n){
  vec3 ds=mix(d,vec3(1e-6),lessThan(abs(d),vec3(1e-6)));vec3 inv=1./ds,t1=(c-hs-o)*inv,t2=(c+hs-o)*inv,tn=min(t1,t2),tf=max(t1,t2);
  float a=max(tn.x,max(tn.y,tn.z)),b=min(tf.x,min(tf.y,tf.z));if(a>b||a<0.)return -1.;
- if(a==tn.z)n=vec3(0,0,-sign(d.z));else if(a==tn.y)n=vec3(0,-sign(d.y),0);else n=vec3(-sign(d.x),0,0);return a;}
+ if(a==tn.z)n=vec3(0.,0.,-sign(d.z));else if(a==tn.y)n=vec3(0.,-sign(d.y),0.);else n=vec3(-sign(d.x),0.,0.);return a;}
 float sph(vec3 ro,vec3 rd,vec3 c,float r){vec3 oc=ro-c;float b=dot(oc,rd),k=b*b-dot(oc,oc)+r*r;if(k<0.)return -1.;float t=-b-sqrt(k);return t>0.?t:-1.;}
 // returns t; m: 1 stone, 2 piece, 3 player, 4 crystal
 float scene(vec3 ro,vec3 rd,out vec3 n,out float m,out vec4 info,bool shadow){
  float best=1e9;m=0.;vec3 nn;float hh;
- float t=field(ro,rd,nn,hh);if(t>0.){best=t;n=nn;m=1.;info=vec4(hh,0,0,0);}
+ float t=field(ro,rd,nn,hh);if(t>0.){best=t;n=nn;m=1.;info=vec4(hh,0.,0.,0.);}
  vec2 q=XW(ro.x);vec4 o4=vec4(q.x,ro.y,ro.z,q.y),d4=vec4(rd.x*uE.x,rd.y,rd.z,rd.x*uE.y);
  for(int i=0;i<32;i++){if(i>=uNb)break;t=box4(o4,d4,uB[i],vec4(.46,.46,.5,.46),nn);if(t>0.&&t<best){best=t;n=nn;m=2.;info=uBc[i];}}
  for(int i=0;i<24;i++){if(i>=uNf)break;if(int(uF[i].w+.5)!=gCard)continue;t=box3(ro,rd,vec3(uUp+uF[i].x,uF[i].y,uF[i].z),vec3(uFc[i].a,.46,.5),nn);if(t>0.&&t<best){best=t;n=nn;m=2.;info=vec4(uFc[i].rgb,0.);}}
@@ -281,7 +281,7 @@ vec3 ghost(vec3 ro,vec3 rd,float t,vec3 col){
  return col;}
 void main(){
  vec2 uv=(gl_FragCoord.xy-.5*uR)/uR.y;
- float yaw=uCA.x,pit=uCA.y;vec3 f=vec3(sin(yaw)*cos(pit),cos(yaw)*cos(pit),-sin(pit)),r=normalize(cross(f,vec3(0,0,1))),u=cross(r,f);
+ float yaw=uCA.x,pit=uCA.y;vec3 f=vec3(sin(yaw)*cos(pit),cos(yaw)*cos(pit),-sin(pit)),r=normalize(cross(f,vec3(0.,0.,1.))),u=cross(r,f);
  vec3 ro=vec3(uCam.xy,1.)+(uv.x*r+uv.y*u)*uCam.z*2.-f*40.,rd=f;
  float tc=1e9;bool dead=false;
  if(uSlab<20.){vec3 pn=vec3(-uSE.y,uSE.x,0.);float dn=dot(rd,pn),od=dot(ro-vec3(uSheet.yz,0.),pn);
@@ -310,7 +310,7 @@ void main(){
   if(uSheet.w>.01&&inb&&(t<0.||tp<t)){float e=min(min(q.z,2.5-q.z),min(min(q.x,uDim.x-q.x)+step(.5,abs(uSE.y))*9.,min(q.y,uDim.y-q.y)+step(.5,abs(uSE.x))*9.));
    col=mix(col,vec3(.62,.84,1.),uSheet.w*(.15+.45*smoothstep(.06,.0,e)));}}
  col=pow(col,vec3(.4545));
- O=vec4(col,1);}`;
+ O=vec4(col,1.);}`;
 let pr=null;function sh(t,s){const o=gl.createShader(t);gl.shaderSource(o,s);gl.compileShader(o);if(!gl.getShaderParameter(o,gl.COMPILE_STATUS))throw new Error(gl.getShaderInfoLog(o));return o}
 function initGL(){pr=gl.createProgram();gl.attachShader(pr,sh(gl.VERTEX_SHADER,VS));gl.attachShader(pr,sh(gl.FRAGMENT_SHADER,FS));gl.linkProgram(pr);
 if(!gl.getProgramParameter(pr,gl.LINK_STATUS))throw new Error(gl.getProgramInfoLog(pr)||'link failed');gl.useProgram(pr);
